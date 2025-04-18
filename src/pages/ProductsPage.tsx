@@ -1,0 +1,454 @@
+// src/pages/ProductsPage.tsx
+import React, { useState, useEffect, useCallback } from "react";
+import Container from "@mui/material/Container";
+import Grid from "@mui/material/Grid";
+import Typography from "@mui/material/Typography";
+import Paper from "@mui/material/Paper";
+import Divider from "@mui/material/Divider";
+import FormGroup from "@mui/material/FormGroup";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Checkbox from "@mui/material/Checkbox";
+import Slider from "@mui/material/Slider";
+import Button from "@mui/material/Button";
+import Drawer from "@mui/material/Drawer";
+import { Link as RouterLink } from "react-router-dom";
+import FilterListIcon from "@mui/icons-material/FilterList";
+import CloseIcon from "@mui/icons-material/Close";
+import IconButton from "@mui/material/IconButton";
+import Box from "@mui/material/Box";
+import CardMedia from "@mui/material/CardMedia";
+import CardContent from "@mui/material/CardContent";
+import Card from "@mui/material/Card";
+
+// Import placeholder images
+import gridImg1 from "../assets/hera_test_imgs/img1.jpg";
+import gridImg2 from "../assets/hera_test_imgs/img2.jpg";
+import gridImg3 from "../assets/hera_test_imgs/img3.jpg";
+import gridImg4 from "../assets/hera_test_imgs/img4.jpg";
+import gridImg5 from "../assets/hera_test_imgs/img5.jpg";
+import gridImg6 from "../assets/hera_test_imgs/img6.jpg";
+import gridImg7 from "../assets/hera_test_imgs/img7.jpg";
+
+// Define sample categories relevant to your store
+const categories = [
+  "Desk Organizers",
+  "Stands & Risers",
+  "Cable Management",
+  "Planters",
+  "Decorations",
+  "Accessories",
+];
+
+// Define sample product data
+const sampleProducts = [
+  {
+    id: "prod1",
+    name: "Minimalist Pen Holder",
+    imageUrl: gridImg1,
+    link: "/product/minimalist-pen-holder",
+    price: 14.99,
+    category: "Desk Organizers",
+    discountpercentage: 10,
+  },
+  {
+    id: "prod2",
+    name: "Cable Clips (Set of 5)",
+    imageUrl: gridImg2,
+    link: "/product/cable-clips",
+    price: 9.95,
+    category: "Cable Management",
+    discountpercentage: 10,
+  },
+  {
+    id: "prod3",
+    name: "Headphone Stand",
+    imageUrl: gridImg3,
+    link: "/product/geometric-headphone-stand",
+    price: 24.5,
+    category: "Stands & Risers",
+    discountpercentage: 10,
+  },
+  {
+    id: "prod4",
+    name: "Laptop Stand",
+    imageUrl: gridImg4,
+    link: "/product/ergonomic-laptop-stand",
+    price: 35.0,
+    category: "Stands & Risers",
+    discountpercentage: 10,
+  },
+  {
+    id: "prod5",
+    name: "Monitor Riser",
+    imageUrl: gridImg5,
+    link: "/product/monitor-riser",
+    price: 42.75,
+    category: "Stands & Risers",
+    discountpercentage: 10,
+  },
+  {
+    id: "prod6",
+    name: "Modular Desk Tray",
+    imageUrl: gridImg6,
+    link: "/product/modular-desk-tray",
+    price: 19.99,
+    category: "Desk Organizers",
+    discountpercentage: 10,
+  },
+  {
+    id: "prod7",
+    name: "Small Geometric Planter",
+    imageUrl: gridImg7,
+    link: "/product/small-planter",
+    price: 12.0,
+    category: "Planters",
+    discountpercentage: 10,
+  },
+  {
+    id: "prod9",
+    name: "Aesthetic Phone Stand",
+    imageUrl: gridImg5,
+    link: "/product/phone-stand-aesthetic",
+    price: 18.5,
+    category: "Stands & Risers",
+    discountpercentage: 10,
+  },
+  {
+    id: "prod10",
+    name: "Desktop Figurine - Geometric Fox",
+    imageUrl: gridImg7,
+    link: "/product/geo-fox",
+    price: 15.99,
+    category: "Decorations",
+    discountpercentage: 10,
+  },
+  {
+    id: "prod11",
+    name: "Under Desk Cable Tray",
+    imageUrl: gridImg6,
+    link: "/product/cable-tray",
+    price: 22.0,
+    category: "Cable Management",
+    discountpercentage: 10,
+  },
+  {
+    id: "prod12",
+    name: "Large Pen & Utensil Holder",
+    imageUrl: gridImg1,
+    link: "/product/large-pen-holder",
+    price: 20.0,
+    category: "Desk Organizers",
+    discountpercentage: 10,
+  },
+];
+
+// Find min/max price for slider defaults
+const prices = sampleProducts.map((p) => p.price);
+const minPrice = Math.min(...prices);
+const maxPrice = Math.max(...prices);
+
+// Interface definitions
+interface Product {
+  id: string;
+  name: string;
+  imageUrl: string;
+  link: string;
+  price: number;
+  category: string;
+  discountpercentage?: number;
+}
+
+interface ProductCardProps {
+  item: Product;
+  imageHeight?: number | string;
+}
+
+// Products Page Component
+const ProductsPage: React.FC = () => {
+  // State
+  const [products] = useState<Product[]>(sampleProducts);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>(products);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [priceRange, setPriceRange] = useState<number[]>([minPrice, maxPrice]);
+  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+
+  // Filter Logic
+  const applyFilters = useCallback(() => {
+    let tempProducts = [...products];
+
+    // Filter by Category
+    if (selectedCategories.length > 0) {
+      tempProducts = tempProducts.filter((product) =>
+        selectedCategories.includes(product.category)
+      );
+    }
+
+    // Filter by Price Range
+    tempProducts = tempProducts.filter(
+      (product) =>
+        product.price >= priceRange[0] && product.price <= priceRange[1]
+    );
+
+    setFilteredProducts(tempProducts);
+  }, [products, selectedCategories, priceRange]);
+
+  // Re-run filters when selections change
+  useEffect(() => {
+    applyFilters();
+  }, [applyFilters]);
+
+  // Event Handlers
+  const handleCategoryChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const category = event.target.name;
+    setSelectedCategories((prev) =>
+      event.target.checked
+        ? [...prev, category]
+        : prev.filter((c) => c !== category)
+    );
+  };
+
+  const handlePriceChange = (event: Event, newValue: number | number[]) => {
+    setPriceRange(newValue as number[]);
+  };
+
+  const handlePriceChangeCommitted = (
+    event: Event | React.SyntheticEvent<Element, Event>,
+    newValue: number | number[]
+  ) => {
+    // Optional: Can apply filter only when user stops sliding for performance
+  };
+
+  const handleDrawerToggle = () => {
+    setMobileFiltersOpen(!mobileFiltersOpen);
+  };
+
+  const resetFilters = () => {
+    setSelectedCategories([]);
+    setPriceRange([minPrice, maxPrice]);
+  };
+
+  // Filters UI - reusable for Sidebar and Drawer
+  const renderFilters = () => (
+    <Box sx={{ p: 2 }}>
+      {/* Categories Filter */}
+      <Typography
+        variant="h6"
+        gutterBottom
+        component="div"
+        sx={{ fontWeight: "bold" }}
+      >
+        Categories
+      </Typography>
+      <FormGroup>
+        {categories.map((category) => (
+          <FormControlLabel
+            key={category}
+            control={
+              <Checkbox
+                checked={selectedCategories.includes(category)}
+                onChange={handleCategoryChange}
+                name={category}
+                size="small"
+              />
+            }
+            label={category}
+            sx={{ mb: -0.5 }}
+          />
+        ))}
+      </FormGroup>
+
+      <Divider sx={{ my: 2 }} />
+
+      {/* Price Range Filter */}
+      <Typography
+        variant="h6"
+        gutterBottom
+        component="div"
+        sx={{ fontWeight: "bold" }}
+      >
+        Price Range
+      </Typography>
+      <Box sx={{ px: 1 }}>
+        <Slider
+          getAriaLabel={() => "Price range"}
+          value={priceRange}
+          onChange={handlePriceChange}
+          onChangeCommitted={handlePriceChangeCommitted}
+          valueLabelDisplay="auto"
+          getAriaValueText={(value) => `$${value}`}
+          valueLabelFormat={(value) => `$${value}`}
+          min={minPrice}
+          max={maxPrice}
+          step={5}
+        />
+      </Box>
+      <Typography variant="body2" align="center" sx={{ mt: 1 }}>
+        ${priceRange[0]} - ${priceRange[1]}
+      </Typography>
+
+      <Divider sx={{ my: 2 }} />
+
+      {/* Reset Button */}
+      <Button variant="outlined" fullWidth onClick={resetFilters}>
+        Reset Filters
+      </Button>
+    </Box>
+  );
+
+  // Product Card Component
+  const ProductCard: React.FC<ProductCardProps> = ({ item, imageHeight = 180 }) => {
+    if (!item) return null;
+    return (
+      <Card
+        component={RouterLink}
+        to={item.link}
+        sx={{
+          textDecoration: "none",
+          display: "flex",
+          flexDirection: "column",
+          position: "relative",
+          height: "100%",
+          overflow: "hidden",
+          transition: "box-shadow 0.3s ease-in-out",
+          "&:hover": { boxShadow: 6 },
+        }}
+      >
+        <CardMedia
+          component="img"
+          image={item.imageUrl}
+          alt={item.name}
+          sx={{
+            height: imageHeight,
+            objectFit: "cover",
+            transition: "transform 0.35s ease-in-out",
+            ".MuiCard-root:hover &": { transform: "scale(1.07)" },
+          }}
+        />
+        <CardContent
+          sx={{
+            textAlign: "center",
+            flexGrow: 1,
+            display: "flex",
+            flexDirection: "column",
+            justifyContent: "center",
+            alignItems: "center",
+            px: 1,
+            py: 1.5,
+          }}
+        >
+          <Typography
+            variant="body1"
+            component="div"
+            sx={{
+              color: "text.primary",
+              fontWeight: 500,
+              minHeight: "2.5em",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              flexGrow: 1,
+              mb: item.price !== undefined ? 0.5 : 0,
+            }}
+          >
+            {item.name}
+          </Typography>
+          {item.price !== undefined && (
+            <Typography
+              variant="body2"
+              color="text.secondary"
+              sx={{ fontWeight: "bold" }}
+            >
+              ${item.price.toFixed(2)}
+            </Typography>
+          )}
+        </CardContent>
+      </Card>
+    );
+  };
+
+  // Main Render
+  return (
+    <Container maxWidth="lg" sx={{ py: 4 }}>
+      {/* Page Title */}
+      <Typography variant="h3" component="h1" gutterBottom sx={{ mb: 3 }}>
+        Explore All Products
+      </Typography>
+
+      {/* Mobile Filter Button */}
+      <Button
+        variant="outlined"
+        startIcon={<FilterListIcon />}
+        onClick={handleDrawerToggle}
+        sx={{ mb: 2, display: { xs: "flex", md: "none" } }}
+      >
+        Filters
+      </Button>
+
+      {/* Main Layout - Flexbox for side-by-side display */}
+      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3 }}>
+        {/* Sidebar */}
+        <Box 
+          sx={{ 
+            width: { xs: '100%', md: '280px' }, 
+            flexShrink: 0,
+            display: { xs: 'none', md: 'block' } 
+          }}
+        >
+          <Paper elevation={1} sx={{ position: 'sticky', top: 80 }}>
+            {renderFilters()}
+          </Paper>
+        </Box>
+
+        {/* Products Grid */}
+        <Box sx={{ flexGrow: 1 }}>
+          <Grid container spacing={3}>
+            {filteredProducts.length > 0 ? (
+              filteredProducts.map((product) => (
+                <Grid item xs={12} sm={6} md={4} key={product.id}>
+                  <ProductCard item={product} />
+                </Grid>
+              ))
+            ) : (
+              <Grid item xs={12}>
+                <Typography align="center" sx={{ py: 5 }}>
+                  No products found matching your criteria.
+                </Typography>
+              </Grid>
+            )}
+          </Grid>
+        </Box>
+      </Box>
+
+      {/* Mobile Filter Drawer */}
+      <Drawer
+        anchor="left"
+        open={mobileFiltersOpen}
+        onClose={handleDrawerToggle}
+        ModalProps={{ keepMounted: true }}
+        sx={{ display: { xs: "block", md: "none" } }}
+      >
+        <Box sx={{ width: 280 }} role="presentation">
+          <Box
+            sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              p: 1,
+            }}
+          >
+            <Typography variant="h6" sx={{ ml: 1 }}>
+              Filters
+            </Typography>
+            <IconButton onClick={handleDrawerToggle}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+          <Divider />
+          {renderFilters()}
+        </Box>
+      </Drawer>
+    </Container>
+  );
+};
+
+export default ProductsPage;

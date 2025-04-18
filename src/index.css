@@ -1,0 +1,23 @@
+/* src/index.css */
+
+/* Import the font MUI uses (if not linked in index.html) */
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+
+/* Apply a more robust box-sizing reset */
+html {
+  box-sizing: border-box;
+}
+
+*, *::before, *::after {
+  box-sizing: inherit;
+}
+
+/* CssBaseline usually handles body margin, but explicitly setting it is safe */
+body {
+  margin: 0;
+  /* Let ThemeProvider and Typography components handle fonts */
+  /* background-color and color will be handled by ThemeProvider/CssBaseline */
+}
+
+/* Remove ALL other default Vite styles (root, h1, button, a, media query, etc.) */
+/* MUI will handle component styles and theming */
