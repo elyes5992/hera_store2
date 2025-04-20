@@ -21,13 +21,14 @@ import CardContent from "@mui/material/CardContent";
 import Card from "@mui/material/Card";
 
 // Import placeholder images
-import gridImg1 from "../assets/hera_test_imgs/img1.jpg";
-import gridImg2 from "../assets/hera_test_imgs/img2.jpg";
-import gridImg3 from "../assets/hera_test_imgs/img3.jpg";
-import gridImg4 from "../assets/hera_test_imgs/img4.jpg";
-import gridImg5 from "../assets/hera_test_imgs/img5.jpg";
-import gridImg6 from "../assets/hera_test_imgs/img6.jpg";
-import gridImg7 from "../assets/hera_test_imgs/img7.jpg";
+import gridImg1 from "../assets/hera_test_imgs/prod1.jpg";
+import gridImg2 from "../assets/hera_test_imgs/prod2.jpg";
+import gridImg3 from "../assets/hera_test_imgs/prod3.jpg";
+import gridImg4 from "../assets/hera_test_imgs/prod4.jpg";
+import gridImg5 from "../assets/hera_test_imgs/prod5.jpg";
+import gridImg6 from "../assets/hera_test_imgs/prod6.jpg";
+import gridImg7 from "../assets/hera_test_imgs/prod7.jpg";
+import gridImg8 from "../assets/hera_test_imgs/prod8.jpg";
 
 // Define sample categories relevant to your store
 const categories = [
@@ -108,6 +109,15 @@ const sampleProducts = [
     id: "prod9",
     name: "Aesthetic Phone Stand",
     imageUrl: gridImg5,
+    link: "/product/phone-stand-aesthetic",
+    price: 18.5,
+    category: "Stands & Risers",
+    discountpercentage: 10,
+  },
+  {
+    id: "prod9",
+    name: "Aesthetic Phone Stand",
+    imageUrl: gridImg8,
     link: "/product/phone-stand-aesthetic",
     price: 18.5,
     category: "Stands & Risers",
@@ -467,12 +477,12 @@ const ProductsPage: React.FC = () => {
             <Grid container spacing={3}>
               {filteredProducts.length > 0 ? (
                 filteredProducts.map((product) => (
-                  <Grid item xs={12} sm={6} md={4} key={product.id}>
+                  <Grid size={{xs:6 ,sm:6 ,md:4}} key={product.id}>
                     <ProductCard item={product} />
                   </Grid>
                 ))
               ) : (
-                <Grid item xs={12}>
+                <Grid size={{xs:6 ,sm:6 ,md:4}}>
                   <Paper
                     sx={{
                       py: 5,

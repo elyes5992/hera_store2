@@ -14,6 +14,7 @@ import ContactPage from './pages/ContactPage'; // Import ContactPage
 import { ThemeProvider, createTheme, responsiveFontSizes } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 import ProductsPage from './pages/ProductsPage';
+import AboutUsPage from './pages/about_us';
 
 const themeColors = {
   // Orange gradient colors
@@ -68,6 +69,7 @@ const App: React.FC = () => {
             {/* Child routes render inside MainLayout's Outlet */}
             <Route index element={<HomePage />} />
             <Route path="products" element={<ProductsPage />} />
+            <Route path="About-us" element={<AboutUsPage />} />
             {/* <Route path="about" element={<AboutPage />} /> */}
             <Route path="contact" element={<ContactPage />} />
             {/* <Route path="cart" element={<CartPage />} /> */}
