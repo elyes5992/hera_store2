@@ -134,7 +134,7 @@ const ContactPage: React.FC = () => {
       
       <Grid container spacing={4}>
         {/* Contact Information */}
-        <Grid item xs={12} md={5}>
+        <Grid size={{xs:12 ,md:5}} >
           <Paper 
             elevation={3}
             sx={{ 
@@ -188,22 +188,22 @@ const ContactPage: React.FC = () => {
             
             <Typography variant="h6" gutterBottom>Business Hours</Typography>
             <Grid container spacing={1}>
-              <Grid item xs={6}>
+              <Grid size={{xs:6}} >
                 <Typography variant="body2">Monday - Friday:</Typography>
               </Grid>
-              <Grid item xs={6}>
+              <Grid size={{xs:6}}>
                 <Typography variant="body2">9:00 AM - 6:00 PM</Typography>
               </Grid>
-              <Grid item xs={6}>
+              <Grid size={{xs:6}}>
                 <Typography variant="body2">Saturday:</Typography>
               </Grid>
-              <Grid item xs={6}>
+              <Grid size={{xs:6}}>
                 <Typography variant="body2">10:00 AM - 4:00 PM</Typography>
               </Grid>
-              <Grid item xs={6}>
+              <Grid size={{xs:6}}>
                 <Typography variant="body2">Sunday:</Typography>
               </Grid>
-              <Grid item xs={6}>
+              <Grid size={{xs:6}}>
                 <Typography variant="body2">Closed</Typography>
               </Grid>
             </Grid>
@@ -211,7 +211,7 @@ const ContactPage: React.FC = () => {
         </Grid>
         
         {/* Contact Form */}
-        <Grid item xs={12} md={7}>
+        <Grid size={{xs:12 ,md:6}} >
           <Paper 
             elevation={3}
             component="form"
@@ -237,7 +237,7 @@ const ContactPage: React.FC = () => {
             </Typography>
             
             <Grid container spacing={3}>
-              <Grid item xs={12} sm={6}>
+              <Grid size={{xs:12 ,md:6}} >
                 <TextField
                   fullWidth
                   label="Your Name"
@@ -251,7 +251,7 @@ const ContactPage: React.FC = () => {
                 />
               </Grid>
               
-              <Grid item xs={12} sm={6}>
+              <Grid size={{xs:12 ,md:6}} >
                 <TextField
                   fullWidth
                   label="Your Email"
@@ -266,7 +266,7 @@ const ContactPage: React.FC = () => {
                 />
               </Grid>
               
-              <Grid item xs={12}>
+              <Grid size={{xs:12 }} >
                 <TextField
                   fullWidth
                   label="Subject"
@@ -277,7 +277,7 @@ const ContactPage: React.FC = () => {
                 />
               </Grid>
               
-              <Grid item xs={12}>
+              <Grid size={{xs:12 }} >
                 <TextField
                   fullWidth
                   label="Your Message"
@@ -293,7 +293,7 @@ const ContactPage: React.FC = () => {
                 />
               </Grid>
               
-              <Grid item xs={12}>
+              <Grid size={{xs:12 }} >
                 <Button
                   type="submit"
                   variant="contained"
@@ -342,7 +342,7 @@ const ContactPage: React.FC = () => {
         </Typography>
         
         <Grid container spacing={3}>
-          <Grid item xs={12} md={6}>
+          <Grid size={{xs:12 ,md:6}} >
             <Typography variant="h6" gutterBottom>What materials do you use?</Typography>
             <Typography variant="body2" paragraph>
               We use high-quality PLA and PETG materials for our 3D printed products, 
@@ -356,7 +356,8 @@ const ContactPage: React.FC = () => {
             </Typography>
           </Grid>
           
-          <Grid item xs={12} md={6}>
+          <Grid size={{xs:12 ,md:6}} >
+            <Typography variant="h6" gutterBottom>Can I track my order?</Typography>
             <Typography variant="h6" gutterBottom>Do you accept custom orders?</Typography>
             <Typography variant="body2" paragraph>
               Yes! We love creating custom designs for our customers. Please contact us with your 

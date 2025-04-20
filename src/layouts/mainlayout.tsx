@@ -28,10 +28,12 @@ const MainLayout: React.FC = () => {
         minHeight: '100vh',
         display: 'flex',
         flexDirection: 'column',
+        overflowX: 'hidden',
         background: "linear-gradient(135deg, #e2cc9c 0%, #e84a2e 100%)",
         margin: 0,
         padding: 0,
         position: 'relative',
+        
       }}
     >
       {/* Background shapes positioned absolutely */}
@@ -55,6 +57,7 @@ const MainLayout: React.FC = () => {
           margin: 0,
           position: 'relative',
           zIndex: 1, // Content above shapes
+          
           
           pt: theme.mixins.toolbar,
          

@@ -135,12 +135,14 @@ const Navbar: React.FC = () => {
       <AppBar
         component="nav"
         position="fixed"
+        
         elevation={0}
         sx={{
           // ... other AppBar styles ...
           top: 0,
           left: "50%",
           transform: "translateX(-50%)",
+          overflowX: 'hidden',
           width: "100%",
           maxWidth: "1900px",
           bgcolor: isScrolled ? "rgba(76, 39, 39, 0.4)" : "transparent",

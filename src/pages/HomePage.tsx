@@ -36,6 +36,7 @@ import PromoGrid from "../components/PromoGrid";
 
 import HeroSection from "../components/HeroSection";
 import AnimatedProductButton from "../components/view_prod_butt";
+import HeroSection2 from "../components/HeroSection2";
 
 // --- Data defining the content for the promo carousel slides ---
 const carouselItems = [
@@ -386,7 +387,7 @@ const HomePage: React.FC = () => {
           Best Sellers
         </Typography>
         {/* Grid layout - maps over all 8 items */}
-        <Grid container spacing={3}>
+        <Grid container spacing={3} sx={{ mb: 3 }}>
           {" "}
           {/* Adjust spacing between items */}
           {bestSellerItems.map((item) => (
