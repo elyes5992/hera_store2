@@ -2,31 +2,43 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Box from '@mui/material/Box';
-import Navbar from '../components/Navbar'; // Make sure this import is correct
-import Footer from '../components/Footer';
+import CssBaseline from '@mui/material/CssBaseline';
+import Navbar from '../components/Navbar';
+
 
 const MainLayout: React.FC = () => {
   return (
-    // This Box should contain ONLY Navbar, main content Box with Outlet, and Footer
-    <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-
-      {/* ===> Navbar should be rendered exactly ONCE here <=== */}
+    
+    <Box 
+      sx={{ 
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        // Apply the gradient background to the entire layout
+        background: "linear-gradient(135deg, #FF8C00 0%,rgb(238, 199, 181) 100%)",
+        // Remove any default margins or padding that might cause gaps
+        margin: 0,
+        padding: 0,
+        position: 'relative', // Add this
+        overflow: 'hidden'
+      }}
+    >
+      <CssBaseline />
+      
       <Navbar />
-
-      {/* Main content area */}
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          // Optional: Add padding here if needed, e.g., pt: 2 for space below sticky nav
-          // paddingTop: (theme) => `${theme.mixins.toolbar.minHeight}px` // Or use theme value if AppBar isn't sticky
+      <Box 
+        component="main" 
+        sx={{ 
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          // Remove any default margins or padding that might cause gaps
+          margin: 0,
+          padding: 0,
         }}
       >
-        <Outlet /> {/* Page content renders here */}
+        <Outlet />
       </Box>
-
-      {/* Footer */}
-      <Footer />
     </Box>
   );
 };

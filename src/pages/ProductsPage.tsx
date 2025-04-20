@@ -280,6 +280,15 @@ const ProductsPage: React.FC = () => {
           min={minPrice}
           max={maxPrice}
           step={5}
+          sx={{
+            color: "#7c4dff", // Purple slider color
+            '& .MuiSlider-thumb': {
+              backgroundColor: '#7c4dff',
+            },
+            '& .MuiSlider-rail': {
+              opacity: 0.5,
+            }
+          }}
         />
       </Box>
       <Typography variant="body2" align="center" sx={{ mt: 1 }}>
@@ -289,7 +298,19 @@ const ProductsPage: React.FC = () => {
       <Divider sx={{ my: 2 }} />
 
       {/* Reset Button */}
-      <Button variant="outlined" fullWidth onClick={resetFilters}>
+      <Button 
+        variant="outlined" 
+        fullWidth 
+        onClick={resetFilters}
+        sx={{
+          borderColor: '#7c4dff',
+          color: '#7c4dff',
+          '&:hover': {
+            borderColor: '#5e35b1',
+            backgroundColor: 'rgba(124, 77, 255, 0.04)',
+          }
+        }}
+      >
         Reset Filters
       </Button>
     </Box>
@@ -309,8 +330,14 @@ const ProductsPage: React.FC = () => {
           position: "relative",
           height: "100%",
           overflow: "hidden",
-          transition: "box-shadow 0.3s ease-in-out",
-          "&:hover": { boxShadow: 6 },
+          transition: "all 0.3s ease-in-out",
+          "&:hover": { 
+            boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15)',
+            transform: 'translateY(-4px)'
+          },
+          backgroundColor: 'rgba(255, 255, 255, 0.85)',
+          backdropFilter: 'blur(10px)',
+          borderRadius: '12px',
         }}
       >
         <CardMedia
@@ -368,86 +395,229 @@ const ProductsPage: React.FC = () => {
 
   // Main Render
   return (
-    <Container maxWidth="lg" sx={{ py: 4 }}>
-      {/* Page Title */}
-      <Typography variant="h3" component="h1" gutterBottom sx={{ mb: 3 }}>
-        Explore All Products
-      </Typography>
-
-      {/* Mobile Filter Button */}
-      <Button
-        variant="outlined"
-        startIcon={<FilterListIcon />}
-        onClick={handleDrawerToggle}
-        sx={{ mb: 2, display: { xs: "flex", md: "none" } }}
-      >
-        Filters
-      </Button>
-
-      {/* Main Layout - Flexbox for side-by-side display */}
-      <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3 }}>
-        {/* Sidebar */}
-        <Box 
+    <Box
+      sx={{
+        minHeight: '100vh',
+        background: 'linear-gradient(135deg, ${gradientStart} 0%, ${gradientEnd} 100%)',
+        pt: 4,
+        pb: 8,
+      }}
+    >
+      <Container maxWidth="lg">
+        {/* Page Title */}
+        <Typography 
+          variant="h3" 
+          component="h1" 
+          gutterBottom 
           sx={{ 
-            width: { xs: '100%', md: '280px' }, 
-            flexShrink: 0,
-            display: { xs: 'none', md: 'block' } 
+            mb: 3, 
+            color: '#fff',
+            textShadow: '0 2px 10px rgba(0,0,0,0.2)',
+            fontWeight: 600,
           }}
         >
-          <Paper elevation={1} sx={{ position: 'sticky', top: 80 }}>
-            {renderFilters()}
-          </Paper>
-        </Box>
+          Explore All Products
+        </Typography>
 
-        {/* Products Grid */}
-        <Box sx={{ flexGrow: 1 }}>
-          <Grid container spacing={3}>
-            {filteredProducts.length > 0 ? (
-              filteredProducts.map((product) => (
-                <Grid item xs={12} sm={6} md={4} key={product.id}>
-                  <ProductCard item={product} />
-                </Grid>
-              ))
-            ) : (
-              <Grid item xs={12}>
-                <Typography align="center" sx={{ py: 5 }}>
-                  No products found matching your criteria.
-                </Typography>
-              </Grid>
-            )}
-          </Grid>
-        </Box>
-      </Box>
+        {/* Mobile Filter Button */}
+        <Button
+          variant="contained"
+          startIcon={<FilterListIcon />}
+          onClick={handleDrawerToggle}
+          sx={{ 
+            mb: 2, 
+            display: { xs: "flex", md: "none" },
+            backgroundColor: 'rgba(255, 255, 255, 0.2)',
+            backdropFilter: 'blur(10px)',
+            color: '#fff',
+            '&:hover': {
+              backgroundColor: 'rgba(255, 255, 255, 0.3)',
+            }
+          }}
+        >
+          Filters
+        </Button>
 
-      {/* Mobile Filter Drawer */}
-      <Drawer
-        anchor="left"
-        open={mobileFiltersOpen}
-        onClose={handleDrawerToggle}
-        ModalProps={{ keepMounted: true }}
-        sx={{ display: { xs: "block", md: "none" } }}
-      >
-        <Box sx={{ width: 280 }} role="presentation">
-          <Box
-            sx={{
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              p: 1,
+        {/* Main Layout - Flexbox for side-by-side display */}
+        <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3 }}>
+          {/* Sidebar */}
+          <Box 
+            sx={{ 
+              width: { xs: '100%', md: '280px' }, 
+              flexShrink: 0,
+              display: { xs: 'none', md: 'block' } 
             }}
           >
-            <Typography variant="h6" sx={{ ml: 1 }}>
-              Filters
-            </Typography>
-            <IconButton onClick={handleDrawerToggle}>
-              <CloseIcon />
-            </IconButton>
+            <Paper 
+              elevation={3} 
+              sx={{ 
+                position: 'sticky', 
+                top: 80,
+                backgroundColor: 'rgba(255, 255, 255, 0.85)',
+                backdropFilter: 'blur(10px)',
+                borderRadius: '12px',
+              }}
+            >
+              {renderFilters()}
+            </Paper>
           </Box>
-          <Divider />
-          {renderFilters()}
+
+          {/* Products Grid */}
+          <Box sx={{ flexGrow: 1 }}>
+            <Grid container spacing={3}>
+              {filteredProducts.length > 0 ? (
+                filteredProducts.map((product) => (
+                  <Grid item xs={12} sm={6} md={4} key={product.id}>
+                    <ProductCard item={product} />
+                  </Grid>
+                ))
+              ) : (
+                <Grid item xs={12}>
+                  <Paper
+                    sx={{
+                      py: 5,
+                      textAlign: 'center',
+                      backgroundColor: 'rgba(255, 255, 255, 0.85)',
+                      backdropFilter: 'blur(10px)',
+                      borderRadius: '12px',
+                    }}
+                  >
+                    <Typography align="center">
+                      No products found matching your criteria.
+                    </Typography>
+                  </Paper>
+                </Grid>
+              )}
+            </Grid>
+          </Box>
         </Box>
-      </Drawer>
-    </Container>
+
+        {/* Mobile Filter Drawer */}
+        <Drawer
+          anchor="left"
+          open={mobileFiltersOpen}
+          onClose={handleDrawerToggle}
+          ModalProps={{ keepMounted: true }}
+          sx={{ display: { xs: "block", md: "none" } }}
+        >
+          <Box 
+            sx={{ 
+              width: 280,
+              height: '100%',
+              background: 'linear-gradient(180deg, #8E2DE2 0%, #4A00E0 100%)'
+            }} 
+            role="presentation"
+          >
+            <Box
+              sx={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                p: 1,
+                color: '#fff'
+              }}
+            >
+              <Typography variant="h6" sx={{ ml: 1 }}>
+                Filters
+              </Typography>
+              <IconButton onClick={handleDrawerToggle} sx={{ color: '#fff' }}>
+                <CloseIcon />
+              </IconButton>
+            </Box>
+            <Divider sx={{ backgroundColor: 'rgba(255,255,255,0.2)' }} />
+            <Box sx={{ 
+              p: 2, 
+              color: '#fff',
+              '& .MuiTypography-root': { color: '#fff' },
+              '& .MuiCheckbox-root': { color: '#fff' },
+              '& .MuiFormControlLabel-root': { color: '#fff' }
+            }}>
+              {/* Categories Filter */}
+              <Typography
+                variant="h6"
+                gutterBottom
+                component="div"
+                sx={{ fontWeight: "bold" }}
+              >
+                Categories
+              </Typography>
+              <FormGroup>
+                {categories.map((category) => (
+                  <FormControlLabel
+                    key={category}
+                    control={
+                      <Checkbox
+                        checked={selectedCategories.includes(category)}
+                        onChange={handleCategoryChange}
+                        name={category}
+                        size="small"
+                        sx={{ color: '#fff', '&.Mui-checked': { color: '#fff' } }}
+                      />
+                    }
+                    label={category}
+                    sx={{ mb: -0.5 }}
+                  />
+                ))}
+              </FormGroup>
+
+              <Divider sx={{ my: 2, backgroundColor: 'rgba(255,255,255,0.2)' }} />
+
+              {/* Price Range Filter */}
+              <Typography
+                variant="h6"
+                gutterBottom
+                component="div"
+                sx={{ fontWeight: "bold" }}
+              >
+                Price Range
+              </Typography>
+              <Box sx={{ px: 1 }}>
+                <Slider
+                  getAriaLabel={() => "Price range"}
+                  value={priceRange}
+                  onChange={handlePriceChange}
+                  onChangeCommitted={handlePriceChangeCommitted}
+                  valueLabelDisplay="auto"
+                  getAriaValueText={(value) => `$${value}`}
+                  valueLabelFormat={(value) => `$${value}`}
+                  min={minPrice}
+                  max={maxPrice}
+                  step={5}
+                  sx={{
+                    color: "#ffffff",
+                    '& .MuiSlider-rail': {
+                      opacity: 0.5,
+                    }
+                  }}
+                />
+              </Box>
+              <Typography variant="body2" align="center" sx={{ mt: 1 }}>
+                ${priceRange[0]} - ${priceRange[1]}
+              </Typography>
+
+              <Divider sx={{ my: 2, backgroundColor: 'rgba(255,255,255,0.2)' }} />
+
+              {/* Reset Button */}
+              <Button 
+                variant="outlined" 
+                fullWidth 
+                onClick={resetFilters}
+                sx={{
+                  borderColor: '#ffffff',
+                  color: '#ffffff',
+                  '&:hover': {
+                    borderColor: '#ffffff',
+                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  }
+                }}
+              >
+                Reset Filters
+              </Button>
+            </Box>
+          </Box>
+        </Drawer>
+      </Container>
+    </Box>
   );
 };
 
