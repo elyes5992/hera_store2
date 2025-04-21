@@ -15,6 +15,11 @@ import { ThemeProvider, createTheme, responsiveFontSizes } from '@mui/material/s
 import CssBaseline from '@mui/material/CssBaseline';
 import ProductsPage from './pages/ProductsPage';
 import AboutUsPage from './pages/about_us';
+import AdminLogin from './pages/Admin/AdminLogin';
+import AdminLayout from './layouts/AdminLayout';
+import Dashboard from './pages/Admin/AdminDashboard';
+import PromoGridManagement from './pages/Admin/PromoGrid';
+import CartPage from './pages/CartPage';
 
 const themeColors = {
   // Orange gradient colors
@@ -70,19 +75,30 @@ const App: React.FC = () => {
             <Route index element={<HomePage />} />
             <Route path="products" element={<ProductsPage />} />
             <Route path="About-us" element={<AboutUsPage />} />
-            {/* <Route path="about" element={<AboutPage />} /> */}
+            <Route path="cart" element={<CartPage/>} />
+            
+            
             <Route path="contact" element={<ContactPage />} />
-            {/* <Route path="cart" element={<CartPage />} /> */}
-            {/* <Route path="account" element={<AccountPage />} /> */}
+            
 
-            {/* Add other pages using the layout here */}
+            
           </Route>
 
-          {/* Routes WITHOUT MainLayout (e.g., maybe a dedicated fullscreen login?) */}
-          {/* <Route path="/login-standalone" element={<LoginPage />} /> */}
+          <Route path="/admin" element={<AdminLayout />}>
+            {/* Admin login page (handled by AdminLayout) */}
+            <Route path="login" element={<AdminLogin />} />
+            
+            {/* Admin dashboard pages */}
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="PromoGridMG" element={<PromoGridManagement />} />
+            
 
-          {/* Catch-all for 404 Not Found page */}
-          {/* <Route path="*" element={<NotFoundPage />} />  // Can be inside or outside MainLayout */}
+
+
+            {/* Add more admin routes as needed */}
+            {/* <Route path="categories" element={<Categories />} /> */}
+            {/* <Route path="customers" element={<Customers />} /> */}
+          </Route>
 
         </Routes>
       </Router>

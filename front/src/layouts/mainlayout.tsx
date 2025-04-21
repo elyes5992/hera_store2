@@ -6,8 +6,13 @@ import CssBaseline from '@mui/material/CssBaseline';
 import { useTheme } from '@mui/material/styles'; // *** Ensure this is imported ***
 import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
-import BackgroundShapes from '../components/BackgroundShapes';
+
 import Toolbar from '@mui/material/Toolbar';
+
+
+import FloatingBlobs from '../components/floatingblobs';
+
+
 
 const MainLayout: React.FC = () => {
   const location = useLocation();
@@ -37,11 +42,18 @@ const MainLayout: React.FC = () => {
       }}
     >
       {/* Background shapes positioned absolutely */}
-      <Box sx={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 0 }}>
+      {/*<Box sx={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 0 }}>
         <BackgroundShapes variant={getShapeVariant()} />
-      </Box>
+      </Box>*/}
+
+      <FloatingBlobs/>
+
+      
+      
+      
 
       <CssBaseline />
+      
       {/* Navbar is rendered here but positioned fixed via its own styles */}
       <Navbar />
       <Toolbar />

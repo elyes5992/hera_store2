@@ -1,5 +1,6 @@
 // src/pages/ProductsPage.tsx
 import React, { useState, useEffect, useCallback } from "react";
+import { Link as RouterLink } from "react-router-dom"; // Import RouterLink for navigation
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Typography from "@mui/material/Typography";
@@ -11,14 +12,15 @@ import Checkbox from "@mui/material/Checkbox";
 import Slider from "@mui/material/Slider";
 import Button from "@mui/material/Button";
 import Drawer from "@mui/material/Drawer";
-import { Link as RouterLink } from "react-router-dom";
 import FilterListIcon from "@mui/icons-material/FilterList";
 import CloseIcon from "@mui/icons-material/Close";
-import IconButton from "@mui/material/IconButton";
+import IconButton from "@mui/material/IconButton"; // Import IconButton
 import Box from "@mui/material/Box";
 import CardMedia from "@mui/material/CardMedia";
 import CardContent from "@mui/material/CardContent";
 import Card from "@mui/material/Card";
+import AddShoppingCartIcon from '@mui/icons-material/AddShoppingCart'; // <-- Import Add to Cart icon
+import { useCart, CartItem } from '../context/cartcontext';
 
 // Import placeholder images
 import gridImg1 from "../assets/hera_test_imgs/prod1.jpg";
@@ -29,6 +31,8 @@ import gridImg5 from "../assets/hera_test_imgs/prod5.jpg";
 import gridImg6 from "../assets/hera_test_imgs/prod6.jpg";
 import gridImg7 from "../assets/hera_test_imgs/prod7.jpg";
 import gridImg8 from "../assets/hera_test_imgs/prod8.jpg";
+import Snackbar from "@mui/material/Snackbar";
+import Alert from "@mui/material/Alert";
 
 // Define sample categories relevant to your store
 const categories = [
@@ -40,122 +44,25 @@ const categories = [
   "Accessories",
 ];
 
-// Define sample product data
-const sampleProducts = [
-  {
-    id: "prod1",
-    name: "Minimalist Pen Holder",
-    imageUrl: gridImg1,
-    link: "/product/minimalist-pen-holder",
-    price: 14.99,
-    category: "Desk Organizers",
-    discountpercentage: 10,
-  },
-  {
-    id: "prod2",
-    name: "Cable Clips (Set of 5)",
-    imageUrl: gridImg2,
-    link: "/product/cable-clips",
-    price: 9.95,
-    category: "Cable Management",
-    discountpercentage: 10,
-  },
-  {
-    id: "prod3",
-    name: "Headphone Stand",
-    imageUrl: gridImg3,
-    link: "/product/geometric-headphone-stand",
-    price: 24.5,
-    category: "Stands & Risers",
-    discountpercentage: 10,
-  },
-  {
-    id: "prod4",
-    name: "Laptop Stand",
-    imageUrl: gridImg4,
-    link: "/product/ergonomic-laptop-stand",
-    price: 35.0,
-    category: "Stands & Risers",
-    discountpercentage: 10,
-  },
-  {
-    id: "prod5",
-    name: "Monitor Riser",
-    imageUrl: gridImg5,
-    link: "/product/monitor-riser",
-    price: 42.75,
-    category: "Stands & Risers",
-    discountpercentage: 10,
-  },
-  {
-    id: "prod6",
-    name: "Modular Desk Tray",
-    imageUrl: gridImg6,
-    link: "/product/modular-desk-tray",
-    price: 19.99,
-    category: "Desk Organizers",
-    discountpercentage: 10,
-  },
-  {
-    id: "prod7",
-    name: "Small Geometric Planter",
-    imageUrl: gridImg7,
-    link: "/product/small-planter",
-    price: 12.0,
-    category: "Planters",
-    discountpercentage: 10,
-  },
-  {
-    id: "prod9",
-    name: "Aesthetic Phone Stand",
-    imageUrl: gridImg5,
-    link: "/product/phone-stand-aesthetic",
-    price: 18.5,
-    category: "Stands & Risers",
-    discountpercentage: 10,
-  },
-  {
-    id: "prod9",
-    name: "Aesthetic Phone Stand",
-    imageUrl: gridImg8,
-    link: "/product/phone-stand-aesthetic",
-    price: 18.5,
-    category: "Stands & Risers",
-    discountpercentage: 10,
-  },
-  {
-    id: "prod10",
-    name: "Desktop Figurine - Geometric Fox",
-    imageUrl: gridImg7,
-    link: "/product/geo-fox",
-    price: 15.99,
-    category: "Decorations",
-    discountpercentage: 10,
-  },
-  {
-    id: "prod11",
-    name: "Under Desk Cable Tray",
-    imageUrl: gridImg6,
-    link: "/product/cable-tray",
-    price: 22.0,
-    category: "Cable Management",
-    discountpercentage: 10,
-  },
-  {
-    id: "prod12",
-    name: "Large Pen & Utensil Holder",
-    imageUrl: gridImg1,
-    link: "/product/large-pen-holder",
-    price: 20.0,
-    category: "Desk Organizers",
-    discountpercentage: 10,
-  },
+// Define sample product data (Interface defined below)
+const sampleProducts: Product[] = [ // Added Type annotation
+  { id: "prod1", name: "Minimalist Pen Holder", imageUrl: gridImg1, link: "/product/minimalist-pen-holder", price: 14.99, category: "Desk Organizers", discountpercentage: 10 },
+  { id: "prod2", name: "Cable Clips (Set of 5)", imageUrl: gridImg2, link: "/product/cable-clips", price: 9.95, category: "Cable Management", discountpercentage: 10 },
+  { id: "prod3", name: "Headphone Stand", imageUrl: gridImg3, link: "/product/geometric-headphone-stand", price: 24.5, category: "Stands & Risers", discountpercentage: 10 },
+  { id: "prod4", name: "Laptop Stand", imageUrl: gridImg4, link: "/product/ergonomic-laptop-stand", price: 35.0, category: "Stands & Risers", discountpercentage: 10 },
+  { id: "prod5", name: "Monitor Riser", imageUrl: gridImg5, link: "/product/monitor-riser", price: 42.75, category: "Stands & Risers", discountpercentage: 10 },
+  { id: "prod6", name: "Modular Desk Tray", imageUrl: gridImg6, link: "/product/modular-desk-tray", price: 19.99, category: "Desk Organizers", discountpercentage: 10 },
+  { id: "prod7", name: "Small Geometric Planter", imageUrl: gridImg7, link: "/product/small-planter", price: 12.0, category: "Planters", discountpercentage: 10 },
+  { id: "prod8", name: "Aesthetic Phone Stand", imageUrl: gridImg8, link: "/product/phone-stand-aesthetic", price: 18.5, category: "Stands & Risers", discountpercentage: 10 }, // Corrected duplicate id, using different image
+  { id: "prod10", name: "Desktop Figurine - Geometric Fox", imageUrl: gridImg7, link: "/product/geo-fox", price: 15.99, category: "Decorations", discountpercentage: 10 },
+  { id: "prod11", name: "Under Desk Cable Tray", imageUrl: gridImg6, link: "/product/cable-tray", price: 22.0, category: "Cable Management", discountpercentage: 10 },
+  { id: "prod12", name: "Large Pen & Utensil Holder", imageUrl: gridImg1, link: "/product/large-pen-holder", price: 20.0, category: "Desk Organizers", discountpercentage: 10 },
 ];
 
 // Find min/max price for slider defaults
 const prices = sampleProducts.map((p) => p.price);
-const minPrice = Math.min(...prices);
-const maxPrice = Math.max(...prices);
+const minPrice = Math.floor(Math.min(...prices)); // Use floor/ceil for cleaner slider steps
+const maxPrice = Math.ceil(Math.max(...prices));
 
 // Interface definitions
 interface Product {
@@ -171,16 +78,20 @@ interface Product {
 interface ProductCardProps {
   item: Product;
   imageHeight?: number | string;
+  onAddToCart?: (item: Product) => void; // <-- Added onAddToCart prop
 }
 
 // Products Page Component
 const ProductsPage: React.FC = () => {
   // State
+  const { addItem } = useCart();
   const [products] = useState<Product[]>(sampleProducts);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>(products);
   const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState<number[]>([minPrice, maxPrice]);
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
 
   // Filter Logic
   const applyFilters = useCallback(() => {
@@ -225,7 +136,7 @@ const ProductsPage: React.FC = () => {
     event: Event | React.SyntheticEvent<Element, Event>,
     newValue: number | number[]
   ) => {
-    // Optional: Can apply filter only when user stops sliding for performance
+    // Can apply filter here if desired for performance
   };
 
   const handleDrawerToggle = () => {
@@ -235,100 +146,53 @@ const ProductsPage: React.FC = () => {
   const resetFilters = () => {
     setSelectedCategories([]);
     setPriceRange([minPrice, maxPrice]);
+    // applyFilters(); // Apply immediately after reset
+  };
+
+  // --- Handler for adding to cart ---
+  const handleAddToCart = (product: Product) => {
+    addItem(product, 1); // Add 1 quantity of the product using context function
+    setSnackbarMessage(`${product.name} added to cart!`);
+    setSnackbarOpen(true);
+  };
+
+  const handleSnackbarClose = (event?: React.SyntheticEvent | Event, reason?: string) => {
+    if (reason === 'clickaway') {
+      return;
+    }
+    setSnackbarOpen(false);
   };
 
   // Filters UI - reusable for Sidebar and Drawer
   const renderFilters = () => (
+    // ... (renderFilters content remains the same)
     <Box sx={{ p: 2 }}>
-      {/* Categories Filter */}
-      <Typography
-        variant="h6"
-        gutterBottom
-        component="div"
-        sx={{ fontWeight: "bold" }}
-      >
-        Categories
-      </Typography>
-      <FormGroup>
-        {categories.map((category) => (
-          <FormControlLabel
-            key={category}
-            control={
-              <Checkbox
-                checked={selectedCategories.includes(category)}
-                onChange={handleCategoryChange}
-                name={category}
-                size="small"
-              />
-            }
-            label={category}
-            sx={{ mb: -0.5 }}
-          />
-        ))}
-      </FormGroup>
-
+      <Typography variant="h6" gutterBottom component="div" sx={{ fontWeight: "bold" }}> Categories </Typography>
+      <FormGroup> {categories.map((category) => ( <FormControlLabel key={category} control={ <Checkbox checked={selectedCategories.includes(category)} onChange={handleCategoryChange} name={category} size="small" /> } label={category} sx={{ mb: -0.5 }} /> ))} </FormGroup>
       <Divider sx={{ my: 2 }} />
-
-      {/* Price Range Filter */}
-      <Typography
-        variant="h6"
-        gutterBottom
-        component="div"
-        sx={{ fontWeight: "bold" }}
-      >
-        Price Range
-      </Typography>
-      <Box sx={{ px: 1 }}>
-        <Slider
-          getAriaLabel={() => "Price range"}
-          value={priceRange}
-          onChange={handlePriceChange}
-          onChangeCommitted={handlePriceChangeCommitted}
-          valueLabelDisplay="auto"
-          getAriaValueText={(value) => `$${value}`}
-          valueLabelFormat={(value) => `$${value}`}
-          min={minPrice}
-          max={maxPrice}
-          step={5}
-          sx={{
-            color: "#7c4dff", // Purple slider color
-            '& .MuiSlider-thumb': {
-              backgroundColor: '#7c4dff',
-            },
-            '& .MuiSlider-rail': {
-              opacity: 0.5,
-            }
-          }}
-        />
-      </Box>
-      <Typography variant="body2" align="center" sx={{ mt: 1 }}>
-        ${priceRange[0]} - ${priceRange[1]}
-      </Typography>
-
+      <Typography variant="h6" gutterBottom component="div" sx={{ fontWeight: "bold" }} > Price Range </Typography>
+      <Box sx={{ px: 1 }}> <Slider getAriaLabel={() => "Price range"} value={priceRange} onChange={handlePriceChange} onChangeCommitted={handlePriceChangeCommitted} valueLabelDisplay="auto" getAriaValueText={(value) => `$${value}`} valueLabelFormat={(value) => `$${value}`} min={minPrice} max={maxPrice} step={5} sx={{ color: "primary.main", '& .MuiSlider-thumb': { backgroundColor: "primary.main", }, '& .MuiSlider-rail': { opacity: 0.5, } }} /> </Box>
+      <Typography variant="body2" align="center" sx={{ mt: 1 }}> ${priceRange[0]} - ${priceRange[1]} </Typography>
       <Divider sx={{ my: 2 }} />
-
-      {/* Reset Button */}
-      <Button 
-        variant="outlined" 
-        fullWidth 
-        onClick={resetFilters}
-        sx={{
-          borderColor: '#7c4dff',
-          color: '#7c4dff',
-          '&:hover': {
-            borderColor: '#5e35b1',
-            backgroundColor: 'rgba(124, 77, 255, 0.04)',
-          }
-        }}
-      >
-        Reset Filters
-      </Button>
+      <Button variant="outlined" fullWidth onClick={resetFilters} sx={{ borderColor: 'primary.main', color: 'primary.main', '&:hover': { borderColor: 'primary.dark', backgroundColor: 'action.hover', } }} > Reset Filters </Button>
     </Box>
   );
 
-  // Product Card Component
-  const ProductCard: React.FC<ProductCardProps> = ({ item, imageHeight = 180 }) => {
+  // --- UPDATED Product Card Component (within ProductsPage) ---
+  const ProductCard: React.FC<ProductCardProps> = ({
+    item,
+    imageHeight = 180,
+     
+  }) => {
     if (!item) return null;
+
+    const handleAddToCartClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+      event.stopPropagation();
+      event.preventDefault();
+      handleAddToCart(item); 
+    };
+
+
     return (
       <Card
         component={RouterLink}
@@ -341,26 +205,59 @@ const ProductsPage: React.FC = () => {
           height: "100%",
           overflow: "hidden",
           transition: "all 0.3s ease-in-out",
-          "&:hover": { 
+          "&:hover": {
             boxShadow: '0 8px 24px rgba(0, 0, 0, 0.15)',
-            transform: 'translateY(-4px)'
+            transform: 'translateY(-4px)',
+            // Show button on card hover
+            '& .add-to-cart-button': {
+              opacity: 1,
+              transform: 'translateY(0)',
+            }
           },
           backgroundColor: 'rgba(255, 255, 255, 0.85)',
           backdropFilter: 'blur(10px)',
           borderRadius: '12px',
         }}
       >
-        <CardMedia
-          component="img"
-          image={item.imageUrl}
-          alt={item.name}
-          sx={{
-            height: imageHeight,
-            objectFit: "cover",
-            transition: "transform 0.35s ease-in-out",
-            ".MuiCard-root:hover &": { transform: "scale(1.07)" },
-          }}
-        />
+        <Box sx={{ position: 'relative' }}> {/* Wrapper for media + button */}
+            <CardMedia
+              component="img"
+              image={item.imageUrl}
+              alt={item.name}
+              sx={{
+                height: imageHeight,
+                objectFit: "cover",
+                transition: "transform 0.35s ease-in-out",
+                ".MuiCard-root:hover &": { transform: "scale(1.07)" },
+              }}
+            />
+           
+            
+                <IconButton
+                    aria-label={`Add ${item.name} to cart`}
+                    onClick={handleAddToCartClick}
+                    className="add-to-cart-button" // Class for hover targeting
+                    sx={{
+                        position: 'absolute',
+                        bottom: 8,
+                        right: 8,
+                        backgroundColor: 'primary.main', // Use theme color
+                        color: 'primary.contrastText',
+                        opacity: 0, // Initially hidden
+                        transform: 'translateY(10px)', // Start slightly down
+                        transition: 'opacity 0.3s ease-in-out, transform 0.3s ease-in-out',
+                        '&:hover': {
+                            backgroundColor: 'primary.dark', // Darken on hover
+                            transform: 'scale(1.1) translateY(0)', // Slight scale effect
+                        },
+                        zIndex: 2 // Ensure button is clickable over image
+                    }}
+                >
+                    <AddShoppingCartIcon fontSize="small" />
+                </IconButton>
+            
+        </Box>
+
         <CardContent
           sx={{
             textAlign: "center",
@@ -373,28 +270,11 @@ const ProductsPage: React.FC = () => {
             py: 1.5,
           }}
         >
-          <Typography
-            variant="body1"
-            component="div"
-            sx={{
-              color: "text.primary",
-              fontWeight: 500,
-              minHeight: "2.5em",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexGrow: 1,
-              mb: item.price !== undefined ? 0.5 : 0,
-            }}
-          >
+          <Typography variant="body1" component="div" sx={{ color: "text.primary", fontWeight: 500, minHeight: "2.5em", display: "flex", alignItems: "center", justifyContent: "center", flexGrow: 1, mb: item.price !== undefined ? 0.5 : 0, }} >
             {item.name}
           </Typography>
           {item.price !== undefined && (
-            <Typography
-              variant="body2"
-              color="text.secondary"
-              sx={{ fontWeight: "bold" }}
-            >
+            <Typography variant="body2" color="text.secondary" sx={{ fontWeight: "bold" }} >
               ${item.price.toFixed(2)}
             </Typography>
           )}
@@ -402,67 +282,73 @@ const ProductsPage: React.FC = () => {
       </Card>
     );
   };
+   // --- End Product Card Component ---
+
 
   // Main Render
   return (
     <Box
       sx={{
         minHeight: '100vh',
-        background: 'linear-gradient(135deg, ${gradientStart} 0%, ${gradientEnd} 100%)',
-        pt: 4,
+        // Example background - assuming these vars are defined elsewhere or replace with actual colors
+        // background: 'linear-gradient(135deg, ${gradientStart} 0%, ${gradientEnd} 100%)',
+        background: 'transparent', // Using background from MainLayout
+        pt: 4, // Adjust padding top if needed considering fixed navbar
         pb: 8,
       }}
     >
       <Container maxWidth="lg">
         {/* Page Title */}
-        <Typography 
-          variant="h3" 
-          component="h1" 
-          gutterBottom 
-          sx={{ 
-            mb: 3, 
-            color: '#fff',
+        <Typography
+          variant="h3"
+          component="h1"
+          gutterBottom
+          sx={{
+            mb: 3,
+            color: '#fff', // White color suitable for gradient background
             textShadow: '0 2px 10px rgba(0,0,0,0.2)',
             fontWeight: 600,
+            textAlign: 'center', // Center title
           }}
         >
-          Explore All Products
+          Explore Our Creations
         </Typography>
 
         {/* Mobile Filter Button */}
-        <Button
-          variant="contained"
-          startIcon={<FilterListIcon />}
-          onClick={handleDrawerToggle}
-          sx={{ 
-            mb: 2, 
-            display: { xs: "flex", md: "none" },
-            backgroundColor: 'rgba(255, 255, 255, 0.2)',
-            backdropFilter: 'blur(10px)',
-            color: '#fff',
-            '&:hover': {
-              backgroundColor: 'rgba(255, 255, 255, 0.3)',
-            }
-          }}
-        >
-          Filters
-        </Button>
+        <Box sx={{ display: 'flex', justifyContent: 'center', mb: 3 }}> {/* Center button */}
+          <Button
+            variant="contained"
+            startIcon={<FilterListIcon />}
+            onClick={handleDrawerToggle}
+            sx={{
+              display: { xs: "inline-flex", md: "none" }, // Use inline-flex for centering
+              backgroundColor: 'rgba(255, 255, 255, 0.2)',
+              backdropFilter: 'blur(10px)',
+              color: '#fff',
+              '&:hover': {
+                backgroundColor: 'rgba(255, 255, 255, 0.3)',
+              }
+            }}
+          >
+            Filters
+          </Button>
+        </Box>
 
         {/* Main Layout - Flexbox for side-by-side display */}
         <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 3 }}>
           {/* Sidebar */}
-          <Box 
-            sx={{ 
-              width: { xs: '100%', md: '280px' }, 
+          <Box
+            sx={{
+              width: { xs: '100%', md: '280px' },
               flexShrink: 0,
-              display: { xs: 'none', md: 'block' } 
+              display: { xs: 'none', md: 'block' }
             }}
           >
-            <Paper 
-              elevation={3} 
-              sx={{ 
-                position: 'sticky', 
-                top: 80,
+            <Paper
+              elevation={3}
+              sx={{
+                position: 'sticky',
+                top: 80, // Adjust based on your actual Navbar height
                 backgroundColor: 'rgba(255, 255, 255, 0.85)',
                 backdropFilter: 'blur(10px)',
                 borderRadius: '12px',
@@ -477,23 +363,18 @@ const ProductsPage: React.FC = () => {
             <Grid container spacing={3}>
               {filteredProducts.length > 0 ? (
                 filteredProducts.map((product) => (
-                  <Grid size={{xs:6 ,sm:6 ,md:4}} key={product.id}>
-                    <ProductCard item={product} />
+                  <Grid size={{xs:6 ,sm:6 ,md:4}} key={product.id}> {/* Grid sizing */}
+                    <ProductCard
+                        item={product}
+                         // Pass the handler
+                    />
                   </Grid>
                 ))
               ) : (
-                <Grid size={{xs:6 ,sm:6 ,md:4}}>
-                  <Paper
-                    sx={{
-                      py: 5,
-                      textAlign: 'center',
-                      backgroundColor: 'rgba(255, 255, 255, 0.85)',
-                      backdropFilter: 'blur(10px)',
-                      borderRadius: '12px',
-                    }}
-                  >
-                    <Typography align="center">
-                      No products found matching your criteria.
+                <Grid size={{xs:12}} > {/* Full width for message */}
+                  <Paper sx={{ py: 5, textAlign: 'center', backgroundColor: 'rgba(255, 255, 255, 0.85)', backdropFilter: 'blur(10px)', borderRadius: '12px', }} >
+                    <Typography align="center" color="text.secondary">
+                      No products found matching your criteria. Try adjusting the filters!
                     </Typography>
                   </Paper>
                 </Grid>
@@ -510,122 +391,33 @@ const ProductsPage: React.FC = () => {
           ModalProps={{ keepMounted: true }}
           sx={{ display: { xs: "block", md: "none" } }}
         >
-          <Box 
-            sx={{ 
+           {/* Re-using renderFilters inside a styled Box for the Drawer */}
+          <Box
+            sx={{
               width: 280,
               height: '100%',
-              background: 'linear-gradient(180deg, #8E2DE2 0%, #4A00E0 100%)'
-            }} 
+              bgcolor: 'background.paper', // Use theme background for drawer
+            }}
             role="presentation"
           >
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "space-between",
-                alignItems: "center",
-                p: 1,
-                color: '#fff'
-              }}
-            >
-              <Typography variant="h6" sx={{ ml: 1 }}>
-                Filters
-              </Typography>
-              <IconButton onClick={handleDrawerToggle} sx={{ color: '#fff' }}>
-                <CloseIcon />
-              </IconButton>
+            <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", p: 1 }} >
+              <Typography variant="h6" sx={{ ml: 1 }}> Filters </Typography>
+              <IconButton onClick={handleDrawerToggle}> <CloseIcon /> </IconButton>
             </Box>
-            <Divider sx={{ backgroundColor: 'rgba(255,255,255,0.2)' }} />
-            <Box sx={{ 
-              p: 2, 
-              color: '#fff',
-              '& .MuiTypography-root': { color: '#fff' },
-              '& .MuiCheckbox-root': { color: '#fff' },
-              '& .MuiFormControlLabel-root': { color: '#fff' }
-            }}>
-              {/* Categories Filter */}
-              <Typography
-                variant="h6"
-                gutterBottom
-                component="div"
-                sx={{ fontWeight: "bold" }}
-              >
-                Categories
-              </Typography>
-              <FormGroup>
-                {categories.map((category) => (
-                  <FormControlLabel
-                    key={category}
-                    control={
-                      <Checkbox
-                        checked={selectedCategories.includes(category)}
-                        onChange={handleCategoryChange}
-                        name={category}
-                        size="small"
-                        sx={{ color: '#fff', '&.Mui-checked': { color: '#fff' } }}
-                      />
-                    }
-                    label={category}
-                    sx={{ mb: -0.5 }}
-                  />
-                ))}
-              </FormGroup>
-
-              <Divider sx={{ my: 2, backgroundColor: 'rgba(255,255,255,0.2)' }} />
-
-              {/* Price Range Filter */}
-              <Typography
-                variant="h6"
-                gutterBottom
-                component="div"
-                sx={{ fontWeight: "bold" }}
-              >
-                Price Range
-              </Typography>
-              <Box sx={{ px: 1 }}>
-                <Slider
-                  getAriaLabel={() => "Price range"}
-                  value={priceRange}
-                  onChange={handlePriceChange}
-                  onChangeCommitted={handlePriceChangeCommitted}
-                  valueLabelDisplay="auto"
-                  getAriaValueText={(value) => `$${value}`}
-                  valueLabelFormat={(value) => `$${value}`}
-                  min={minPrice}
-                  max={maxPrice}
-                  step={5}
-                  sx={{
-                    color: "#ffffff",
-                    '& .MuiSlider-rail': {
-                      opacity: 0.5,
-                    }
-                  }}
-                />
-              </Box>
-              <Typography variant="body2" align="center" sx={{ mt: 1 }}>
-                ${priceRange[0]} - ${priceRange[1]}
-              </Typography>
-
-              <Divider sx={{ my: 2, backgroundColor: 'rgba(255,255,255,0.2)' }} />
-
-              {/* Reset Button */}
-              <Button 
-                variant="outlined" 
-                fullWidth 
-                onClick={resetFilters}
-                sx={{
-                  borderColor: '#ffffff',
-                  color: '#ffffff',
-                  '&:hover': {
-                    borderColor: '#ffffff',
-                    backgroundColor: 'rgba(255, 255, 255, 0.1)',
-                  }
-                }}
-              >
-                Reset Filters
-              </Button>
-            </Box>
+            <Divider />
+            {renderFilters()} {/* Render the filters UI */}
           </Box>
         </Drawer>
+        <Snackbar
+            open={snackbarOpen}
+            autoHideDuration={3000} // Hide after 3 seconds
+            onClose={handleSnackbarClose}
+            anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }} // Position
+        >
+            <Alert onClose={handleSnackbarClose} severity="success" variant="filled" sx={{ width: '100%' }}>
+                {snackbarMessage}
+            </Alert>
+        </Snackbar>
       </Container>
     </Box>
   );
