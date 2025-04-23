@@ -66,7 +66,7 @@ const HeroSection: React.FC = () => {
         sx={{
           p: { xs: 3, sm: 4, md: 6 }, // Adjusted padding
           bgcolor: 'rgba(255, 255, 255, 0.15)',
-          backdropFilter: 'blur(12px)',
+          /*backdropFilter: 'blur(12px)',*/
           borderRadius: '16px',
           border: '1px solid rgba(255, 255, 255, 0.2)',
           textAlign: 'center',

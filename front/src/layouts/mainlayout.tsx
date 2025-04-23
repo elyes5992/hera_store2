@@ -1,6 +1,6 @@
 // src/layouts/MainLayout.tsx
-import React from 'react';
-import { Outlet, useLocation } from 'react-router-dom';
+import React, { useEffect, useState } from 'react';
+import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
 import { useTheme } from '@mui/material/styles'; // *** Ensure this is imported ***
@@ -11,12 +11,39 @@ import Toolbar from '@mui/material/Toolbar';
 
 
 import FloatingBlobs from '../components/floatingblobs';
+import BlobLoader from '../components/Loader';
 
 
 
 const MainLayout: React.FC = () => {
   const location = useLocation();
   const theme = useTheme(); // *** Ensure theme is obtained ***
+  const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState(false);
+  useEffect(() => {
+    // When location changes, set loading to true
+    setIsLoading(true);
+    
+    // After a delay, set loading to false (transition complete)
+    const timer = setTimeout(() => {
+      setIsLoading(false);
+    }, 1200); // Adjust timing as needed
+    
+    return () => clearTimeout(timer);
+  }, [location.pathname]);
+
+  const handleNavigation = (path: string) => {
+    setIsLoading(true);
+    setTimeout(() => {
+      navigate(path);
+    }, 300);
+  };
+
+
+
+
+
+
 
   const getShapeVariant = () => {
     if (location.pathname.includes('/products')) {
@@ -46,7 +73,11 @@ const MainLayout: React.FC = () => {
         <BackgroundShapes variant={getShapeVariant()} />
       </Box>*/}
 
-      <FloatingBlobs/>
+      <Box sx={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 0 }}>  
+        <FloatingBlobs/>
+      </Box>  
+
+     
 
       
       

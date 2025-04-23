@@ -18,10 +18,25 @@
     "express": "^5.1.0",
     "express-validator": "^7.2.1",
     "helmet": "^8.1.0",
+    "hpp": "^0.2.3",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.13.2",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.2",
-    "stripe": "^18.0.0"
+    "stripe": "^18.0.0",
+    "uuid": "^11.1.0",
+    "xss-clean": "^0.1.4"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^3.0.0",
+    "@types/cookie-parser": "^1.4.8",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.1",
+    "@types/jsonwebtoken": "^9.0.9",
+    "@types/mongoose": "^5.11.97",
+    "@types/node": "^22.14.1",
+    "nodemon": "^3.1.9",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
   }
 }
