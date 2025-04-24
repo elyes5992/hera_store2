@@ -105,7 +105,7 @@ const AdminLayout: React.FC = () => {
   const navItems = [
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/admin/dashboard' },
     { text: 'Orders', icon: <ShoppingBagIcon />, path: '/admin/orders' },
-    { text: 'Products', icon: <InventoryIcon />, path: '/admin/products' },
+    { text: 'Products', icon: <InventoryIcon />, path: '/admin/AdminProducts' },
     { text: 'Categories', icon: <CategoryIcon />, path: '/admin/categories' },
     { text: 'Promo Grid', icon: <GridViewIcon />, path: '/admin/PromoGridMG' },
   ];

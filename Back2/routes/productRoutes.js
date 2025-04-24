@@ -30,6 +30,17 @@ router
   .put(protect, admin, uploadProductImages, updateProduct)
   .delete(protect, admin, deleteProduct);
 
-router.route('/upload').post(protect, admin, uploadProductImages);
+  router.route('/upload').post(protect, admin, uploadProductImages, (req, res) => {
+    if (req.files) {
+      const uploadedFiles = req.files.map(file => file.path.replace(/\\/g, '/'));
+      res.json({ 
+        success: true,
+        images: uploadedFiles,
+        imageUrl: uploadedFiles[0] // For backward compatibility
+      });
+    } else {
+      res.status(400).json({ success: false, message: 'No files uploaded' });
+    }
+  });
 
 module.exports = router;

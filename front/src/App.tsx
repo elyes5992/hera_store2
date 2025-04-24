@@ -20,7 +20,8 @@ import AdminLayout from './layouts/AdminLayout';
 import Dashboard from './pages/Admin/AdminDashboard';
 
 import CartPage from './pages/CartPage';
-import ProductsAdminPage from './pages/Admin/AdminProducts';
+import AdminProductsPage from './pages/Admin/AdminProducts';
+import ProductsPage2 from './pages/ProductsPage2';
 
 const themeColors = {
   // Orange gradient colors
@@ -74,7 +75,7 @@ const App: React.FC = () => {
           <Route path="/" element={<MainLayout />}>
             {/* Child routes render inside MainLayout's Outlet */}
             <Route index element={<HomePage />} />
-            <Route path="products" element={<ProductsPage />} />
+            <Route path="products" element={<ProductsPage2 />} />
             <Route path="About-us" element={<AboutUsPage />} />
             <Route path="cart" element={<CartPage/>} />
             
@@ -91,7 +92,7 @@ const App: React.FC = () => {
             
             {/* Admin dashboard pages */}
             <Route path="dashboard" element={<Dashboard />} />
-            <Route path="AdminProducts" element={<ProductsAdminPage/>} />
+            <Route path="AdminProducts" element={<AdminProductsPage/>} />
             
             
           

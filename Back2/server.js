@@ -30,12 +30,21 @@ app.use(cors({
 // Sanitize data to prevent NoSQL injection
 app.use(mongoSanitize());
 
+// Serve uploaded files from the uploads folder
+app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
+
 // Routes
+
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
 
-// Serve uploaded files from the uploads folder
-app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
+
+
+
+
+
+
+
 
 // Error Handling Middleware
 app.use(notFound);
