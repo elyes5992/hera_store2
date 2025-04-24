@@ -39,8 +39,20 @@ const drawerWidth = 240;
 
 // Mock function for authentication - replace with your actual auth logic
 const checkAdminAuth = () => {
-  // For now, just check if we have a token in localStorage
-  return localStorage.getItem('adminToken') !== null;
+  const token = localStorage.getItem('adminToken');
+  const adminInfo = localStorage.getItem('adminInfo');
+  
+  if (!token || !adminInfo) {
+    return false;
+  }
+  
+  try {
+    // Parse admin info to check if they're actually an admin
+    const admin = JSON.parse(adminInfo);
+    return admin && admin.isAdmin === true;
+  } catch (error) {
+    return false;
+  }
 };
 
 const AdminLayout: React.FC = () => {

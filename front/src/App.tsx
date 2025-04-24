@@ -18,7 +18,7 @@ import AboutUsPage from './pages/about_us';
 import AdminLogin from './pages/Admin/AdminLogin';
 import AdminLayout from './layouts/AdminLayout';
 import Dashboard from './pages/Admin/AdminDashboard';
-import PromoGridManagement from './pages/Admin/PromoGrid';
+
 import CartPage from './pages/CartPage';
 
 const themeColors = {
@@ -90,7 +90,7 @@ const App: React.FC = () => {
             
             {/* Admin dashboard pages */}
             <Route path="dashboard" element={<Dashboard />} />
-            <Route path="PromoGridMG" element={<PromoGridManagement />} />
+            
             
 
 

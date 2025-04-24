@@ -1,14 +1,14 @@
 // src/store/apis/productsApi.ts
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'; //@reduxjs/toolkit/query/react'
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 export const productsApi = createApi({
   reducerPath: 'productsApi',
   baseQuery: fetchBaseQuery({ 
     baseUrl: 'http://localhost:5000/api',
     credentials: 'include',
-    prepareHeaders: (headers, { getState }) => {
+    prepareHeaders: (headers) => {
       // Add authorization header if we have a token
-      const token = (getState() as any).auth.token;
+      const token = localStorage.getItem('adminToken');
       if (token) {
         headers.set('authorization', `Bearer ${token}`);
       }

@@ -11,13 +11,10 @@ import {
   Avatar,
   Alert,
   useTheme,
+  CircularProgress
 } from '@mui/material';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import { motion } from 'framer-motion';
-
-// Mock admin credentials (in a real app, this would be validated on the backend)
-const ADMIN_USERNAME = 'admin';
-const ADMIN_PASSWORD = 'admin123';
 
 const MotionPaper = motion(Paper);
 
@@ -27,15 +24,17 @@ const AdminLogin: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
+  const [loading, setLoading] = useState(false);
   
   // Check if user is already logged in
   useEffect(() => {
-    if (localStorage.getItem('adminToken')) {
+    const token = localStorage.getItem('adminToken');
+    if (token) {
       navigate('/admin/dashboard');
     }
   }, [navigate]);
   
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     // Simple validation
@@ -44,13 +43,44 @@ const AdminLogin: React.FC = () => {
       return;
     }
     
-    // Check admin credentials
-    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-      // In a real app, you would get a token from your backend
-      localStorage.setItem('adminToken', 'admin-mock-token');
+    setLoading(true);
+    setError('');
+    
+    try {
+      // Call the backend API
+      const response = await fetch('http://localhost:5000/api/users/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email: username, password }),
+      });
+      
+      const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.message || 'Authentication failed');
+      }
+      
+      // Check if user is admin
+      if (!data.isAdmin) {
+        throw new Error('Not authorized as admin');
+      }
+      
+      // Store token and user info
+      localStorage.setItem('adminToken', data.token);
+      localStorage.setItem('adminInfo', JSON.stringify({
+        id: data._id,
+        name: data.name,
+        email: data.email,
+        isAdmin: data.isAdmin
+      }));
+      
       navigate('/admin/dashboard');
-    } else {
-      setError('Invalid username or password');
+    } catch (error) {
+      setError(error instanceof Error ? error.message : 'Authentication failed');
+    } finally {
+      setLoading(false);
     }
   };
   
@@ -106,6 +136,7 @@ const AdminLogin: React.FC = () => {
               autoFocus
               value={username}
               onChange={(e) => setUsername(e.target.value)}
+              disabled={loading}
             />
             <TextField
               margin="normal"
@@ -118,6 +149,7 @@ const AdminLogin: React.FC = () => {
               autoComplete="current-password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              disabled={loading}
             />
             <Button
               type="submit"
@@ -132,8 +164,9 @@ const AdminLogin: React.FC = () => {
                   bgcolor: theme.themeColors.buttonPrimaryHover,
                 },
               }}
+              disabled={loading}
             >
-              Sign In
+              {loading ? <CircularProgress size={24} color="inherit" /> : 'Sign In'}
             </Button>
           </Box>
         </MotionPaper>
