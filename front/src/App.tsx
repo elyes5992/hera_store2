@@ -20,6 +20,7 @@ import AdminLayout from './layouts/AdminLayout';
 import Dashboard from './pages/Admin/AdminDashboard';
 
 import CartPage from './pages/CartPage';
+import ProductsAdminPage from './pages/Admin/AdminProducts';
 
 const themeColors = {
   // Orange gradient colors
@@ -90,8 +91,10 @@ const App: React.FC = () => {
             
             {/* Admin dashboard pages */}
             <Route path="dashboard" element={<Dashboard />} />
+            <Route path="AdminProducts" element={<ProductsAdminPage/>} />
             
             
+          
 
 
 
