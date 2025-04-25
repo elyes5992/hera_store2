@@ -7,6 +7,8 @@ const mongoSanitize = require('express-mongo-sanitize');
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
 const productRoutes = require('./routes/productRoutes');
 const userRoutes=require ('./routes/userRoutes');
+const orderRoutes=require ('./routes/orderRoutes');
+const setupAdminUser = require('./utils/adminsetup');
 const path = require('path');
 //const userRoutes= require('.routes/userRoutes')
 
@@ -14,7 +16,10 @@ const path = require('path');
 dotenv.config();
 
 // Connect to database
-connectDB();
+connectDB().then(() => {
+  // Setup admin user after database connection
+  setupAdminUser();
+});
 
 const app = express();
 
@@ -31,12 +36,18 @@ app.use(cors({
 app.use(mongoSanitize());
 
 // Serve uploaded files from the uploads folder
-app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
+const uploadsPath = path.join(__dirname, '/uploads');
+console.log('Attempting to serve static files for /uploads from:', uploadsPath); // Add logging
+app.use('/uploads', express.static(uploadsPath));
 
 // Routes
-
+app.get('/', (req, res) => {
+  res.send('Hera Store API is running');
+});
 app.use('/api/products', productRoutes);
 app.use('/api/users', userRoutes);
+app.use('/api/orders', orderRoutes);
+
 
 
 

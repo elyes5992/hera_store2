@@ -4,16 +4,11 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import MainLayout from './layouts/mainlayout'; // Import MainLayout
 import HomePage from './pages/HomePage';
 import ContactPage from './pages/ContactPage'; // Import ContactPage
-// Import other pages as you create them
-// import ProductsPage from './pages/ProductsPage';
-// import AboutPage from './pages/AboutPage';
-// import ContactPage from './pages/ContactPage';
-// import CartPage from './pages/CartPage';
-// import AccountPage from './pages/AccountPage'; // Or LoginPage, etc.
+
 
 import { ThemeProvider, createTheme, responsiveFontSizes } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
-import ProductsPage from './pages/ProductsPage';
+
 import AboutUsPage from './pages/about_us';
 import AdminLogin from './pages/Admin/AdminLogin';
 import AdminLayout from './layouts/AdminLayout';
@@ -22,6 +17,8 @@ import Dashboard from './pages/Admin/AdminDashboard';
 import CartPage from './pages/CartPage';
 import AdminProductsPage from './pages/Admin/AdminProducts';
 import ProductsPage2 from './pages/ProductsPage2';
+
+
 
 const themeColors = {
   // Orange gradient colors
@@ -80,6 +77,8 @@ const App: React.FC = () => {
             <Route path="cart" element={<CartPage/>} />
             
             
+            
+            
             <Route path="contact" element={<ContactPage />} />
             
 
@@ -95,13 +94,11 @@ const App: React.FC = () => {
             <Route path="AdminProducts" element={<AdminProductsPage/>} />
             
             
+            
           
 
 
-
-            {/* Add more admin routes as needed */}
-            {/* <Route path="categories" element={<Categories />} /> */}
-            {/* <Route path="customers" element={<Customers />} /> */}
+            
           </Route>
 
         </Routes>

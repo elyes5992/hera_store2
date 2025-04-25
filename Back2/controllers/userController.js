@@ -2,6 +2,7 @@
 const asyncHandler = require('express-async-handler');
 const User = require('../models/userModel');
 const generateToken = require('../utils/generateToken');
+const bcrypt = require('bcryptjs');
 
 // @desc    Auth user & get token
 // @route   POST /api/users/login
@@ -9,33 +10,53 @@ const generateToken = require('../utils/generateToken');
 const authUser = asyncHandler(async (req, res) => {
   const { email, password } = req.body;
 
-  // Special case for admin login with hardcoded credentials
-  if (email === 'admin' && password === 'admin123') {
-    // Create or find the admin user
-    let adminUser = await User.findOne({ email: 'admin@herastore.com' });
+  // Special case for admin login
+  if (email === process.env.ADMIN_EMAIL) {
+    // Find the admin user
+    let adminUser = await User.findOne({ email: process.env.ADMIN_EMAIL });
     
     if (!adminUser) {
       // Create admin user if it doesn't exist yet
+      const hashedPassword = await bcrypt.hash(process.env.ADMIN_PASSWORD, 10);
       adminUser = await User.create({
         name: 'Admin User',
-        email: 'admin@herastore.com',
-        password: 'admin123', // Will be hashed by the pre-save hook
+        email: process.env.ADMIN_EMAIL,
+        password: hashedPassword, // Store hashed password
         isAdmin: true
       });
+    } else {
+      // Update the admin password if it changed in env variables
+      // This allows you to update the admin password by changing the env variable
+      // Only do this in development, in production you'd use a more controlled process
+      if (process.env.NODE_ENV === 'development') {
+        const isMatch = await adminUser.matchPassword(password);
+        if (!isMatch && password === process.env.ADMIN_PASSWORD) {
+          adminUser.password = process.env.ADMIN_PASSWORD; // will be hashed by pre-save hook
+          await adminUser.save();
+        }
+      }
     }
     
-    res.json({
-      _id: adminUser._id,
-      name: adminUser.name,
-      email: adminUser.email,
-      isAdmin: adminUser.isAdmin,
-      token: generateToken(adminUser._id)
-    });
+    // Verify the password
+    const isMatch = await adminUser.matchPassword(password);
+    
+    if (isMatch) {
+      res.json({
+        _id: adminUser._id,
+        name: adminUser.name,
+        email: adminUser.email,
+        isAdmin: adminUser.isAdmin,
+        token: generateToken(adminUser._id)
+      });
+    } else {
+      res.status(401);
+      throw new Error('Invalid admin credentials');
+    }
     
     return;
   }
 
-  // Regular user login
+  // Regular user login (unchanged)
   const user = await User.findOne({ email });
 
   if (user && (await user.matchPassword(password))) {

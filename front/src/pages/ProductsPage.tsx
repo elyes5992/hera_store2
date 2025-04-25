@@ -272,17 +272,31 @@ const ProductsPage: React.FC = () => {
   };
 
   // Format image URL - ensures server path is properly converted to full URL
-  const formatImageUrl = (url: string) => {
-    if (!url) return "";
+  // Inside your ProductsPage component
 
-    // If it's a relative URL (starts with /), prepend the API base URL
-    if (url.startsWith("/")) {
-      return `http://localhost:5000${url}`;
-    }
-    // Otherwise, use it as is
-    return url;
-  };
+const formatImageUrl = (url: string | undefined | null): string => {
+  // Base URL of your backend server where images are served
+  const API_BASE_URL = "http://localhost:5000"; // <-- Make sure this is correct!
 
+  if (!url) {
+    // Return an empty string or a path to a default placeholder image
+    // Example placeholder: return '/path/to/default-placeholder.png';
+    return "";
+  }
+
+  // 1. Check if it's already an absolute URL
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    return url; // It's already complete, use it as is
+  }
+
+  // 2. If not absolute, treat it as a relative path from the backend root.
+  //    Construct the full URL.
+  //    Ensure we don't create double slashes (e.g., "http://server//uploads/image.jpg")
+  const sanitizedPath = url.startsWith('/') ? url.substring(1) : url;
+
+  // Construct the full URL
+  return `${API_BASE_URL}/${sanitizedPath}`;
+};
   // Filter Logic
   const applyFilters = useCallback(() => {
     let tempProducts = [...products];

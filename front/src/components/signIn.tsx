@@ -10,13 +10,17 @@ import {
   InputAdornment,
   Link,
   Paper,
+  Alert,
+  CircularProgress,
 } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { motion } from 'framer-motion';
+import { useLoginMutation } from '../store/apis/authApi';
+import { useUser } from '../context/userContext';
 
 interface SignInFormProps {
-  onSwitchMode: () => void; // Function to call when switching to Sign Up
-  // Add onSubmit prop if needed: onSubmit: (data: { email: string; password: string }) => void;
+  onSwitchMode: () => void;
+  onSuccess: () => void;  // Function to call when switching to Sign Up
 }
 
 const formVariants = {
@@ -36,9 +40,15 @@ const buttonHoverTap = {
 const SignInForm: React.FC<SignInFormProps> = ({ onSwitchMode }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({ email: '', password: '' });
+  const [loginError, setLoginError] = useState<string | null>(null);
+  
+  const [login, { isLoading }] = useLoginMutation();
+  const { login: userLogin } = useUser();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, [event.target.name]: event.target.value });
+    // Clear error when user types
+    if (loginError) setLoginError(null);
   };
 
   const handleClickShowPassword = () => {
@@ -49,11 +59,18 @@ const SignInForm: React.FC<SignInFormProps> = ({ onSwitchMode }) => {
     event.preventDefault();
   };
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    console.log('Sign In Data:', formData);
-    // Add your actual sign-in logic here
-    // Example: if (onSubmit) onSubmit(formData);
+    try {
+      const userData = await login(formData).unwrap();
+      userLogin(userData);
+      // You can redirect or close the modal here
+    } catch (err: any) {
+      setLoginError(
+        err.data?.message || 'Failed to login. Please check your credentials.'
+      );
+      console.error('Login failed:', err);
+    }
   };
 
   return (
@@ -63,9 +80,6 @@ const SignInForm: React.FC<SignInFormProps> = ({ onSwitchMode }) => {
         sx={{
           p: { xs: 3, sm: 4 },
           borderRadius: '12px',
-          // Example background - adjust with your theme
-          // bgcolor: 'rgba(255, 255, 255, 0.08)',
-          // backdropFilter: 'blur(10px)',
         }}
       >
         <Box component="form" onSubmit={handleSubmit} noValidate>
@@ -73,6 +87,12 @@ const SignInForm: React.FC<SignInFormProps> = ({ onSwitchMode }) => {
             <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold' }}>
               Welcome Back!
             </Typography>
+
+            {loginError && (
+              <Alert severity="error" sx={{ width: '100%' }}>
+                {loginError}
+              </Alert>
+            )}
 
             <TextField
               margin="normal"
@@ -85,6 +105,7 @@ const SignInForm: React.FC<SignInFormProps> = ({ onSwitchMode }) => {
               autoFocus
               value={formData.email}
               onChange={handleChange}
+              error={!!loginError}
             />
 
             <TextField
@@ -98,6 +119,7 @@ const SignInForm: React.FC<SignInFormProps> = ({ onSwitchMode }) => {
               autoComplete="current-password"
               value={formData.password}
               onChange={handleChange}
+              error={!!loginError}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
@@ -113,13 +135,6 @@ const SignInForm: React.FC<SignInFormProps> = ({ onSwitchMode }) => {
                 ),
               }}
             />
-             {/* Optional: Remember Me Checkbox & Forgot Password Link */}
-             {/*
-             <Box sx={{ width: '100%', display: 'flex', justifyContent: 'space-between', alignItems: 'center', mt: -1 }}>
-                <FormControlLabel control={<Checkbox value="remember" color="primary" />} label="Remember me" />
-                <Link href="#" variant="body2"> Forgot password? </Link>
-             </Box>
-             */}
 
             <motion.div whileHover="hover" whileTap="tap" variants={buttonHoverTap} style={{ width: '100%' }}>
               <Button
@@ -127,9 +142,10 @@ const SignInForm: React.FC<SignInFormProps> = ({ onSwitchMode }) => {
                 fullWidth
                 variant="contained"
                 size="large"
+                disabled={isLoading}
                 sx={{ mt: 2, py: 1.5, fontWeight: 'bold' }}
               >
-                Sign In
+                {isLoading ? <CircularProgress size={24} color="inherit" /> : 'Sign In'}
               </Button>
             </motion.div>
 

@@ -11,7 +11,7 @@ import Toolbar from '@mui/material/Toolbar';
 
 
 import FloatingBlobs from '../components/floatingblobs';
-import BlobLoader from '../components/Loader';
+
 
 
 

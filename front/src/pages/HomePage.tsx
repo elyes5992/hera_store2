@@ -6,7 +6,7 @@ import Container from "@mui/material/Container"; // Used for centering grid and 
 import Box from "@mui/material/Box";
 import Rating from '@mui/material/Rating'; // <-- Import Rating
 import Chip from '@mui/material/Chip';   // <-- Import Chip
-import Stack from '@mui/material/Stack'; 
+
 
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid"; // For the Best Sellers layout
@@ -36,7 +36,7 @@ import PromoGrid from "../components/PromoGrid";
 
 import HeroSection from "../components/HeroSection";
 import AnimatedProductButton from "../components/view_prod_butt";
-import HeroSection2 from "../components/HeroSection2";
+
 
 // --- Data defining the content for the promo carousel slides ---
 const carouselItems = [
