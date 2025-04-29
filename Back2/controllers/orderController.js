@@ -245,6 +245,8 @@ const getOrderStats = asyncHandler(async (req, res) => {
         }
       }
     ]);
+
+    
   
     // Get recent orders
     const recentOrders = await Order.find({})
@@ -258,13 +260,82 @@ const getOrderStats = asyncHandler(async (req, res) => {
       ordersByStatus,
       recentOrders,
     });
-  });
+  }
 
+
+);
+
+
+const toggleOrderPaidStatus = asyncHandler(async (req, res) => {
+  const order = await Order.findById(req.params.id);
+
+  if (order) {
+    // Toggle the isPaid status
+    order.isPaid = !order.isPaid;
+
+    // Update paidAt accordingly
+    if (order.isPaid) {
+      // If marked as paid, set the paidAt date
+      order.paidAt = Date.now();
+      // Optionally clear paymentResult if it was tied to a specific system like PayPal
+      // order.paymentResult = undefined;
+    } else {
+      // If marked as unpaid, clear the paidAt date
+      order.paidAt = undefined; // Or null
+       // Optionally clear paymentResult
+       // order.paymentResult = undefined;
+    }
+
+    const updatedOrder = await order.save();
+    res.json(updatedOrder);
+
+  } else {
+    res.status(404);
+    throw new Error('Order not found');
+  }
+});
+
+const getTotalRevenue = asyncHandler(async (req, res) => {
+  console.log("Attempting to get total revenue only..."); // Add log
+  try {
+      const revenueResult = await Order.aggregate([
+          { $match: { isPaid: true } }, // Filter for paid orders
+          { $group: { _id: null, total: { $sum: '$totalPrice' } } }, // Sum totalPrice
+      ]);
+
+      const calculatedTotalRevenue = revenueResult.length > 0 ? revenueResult[0].total : 0;
+      console.log("Calculated Total Revenue:", calculatedTotalRevenue);
+
+      // Send response with only the totalRevenue
+      res.json({ totalRevenue: calculatedTotalRevenue });
+
+  } catch (error) {
+      console.error("!!! SERVER ERROR IN getTotalRevenue !!!:", error);
+      res.status(500);
+      throw new Error(`Server Error calculating total revenue: ${error.message}`);
+  }
+});
+
+const getTotalOrdersCount = asyncHandler(async (req, res) => {
+  console.log('Attempting to get total orders count...'); // Add log
+  const totalOrders = await Order.countDocuments({}); // Count all documents
+
+  if (typeof totalOrders === 'number') { // Check if countDocuments returned a number
+    console.log(`Calculated Total Orders Count: ${totalOrders}`); // Add log
+    res.status(200).json({ totalOrders }); // Send count in an object
+  } else {
+    // This case is unlikely with countDocuments but good practice
+    console.error('Failed to calculate total orders count.');
+    res.status(500);
+    throw new Error('Could not retrieve total order count');
+  }
+});
 
 
 
 module.exports = {
   createOrder,
+  toggleOrderPaidStatus,
   getOrderStats,
   getOrderById,
   updateOrderToPaid,
@@ -272,5 +343,7 @@ module.exports = {
   getMyOrders,
   getOrders,
   deleteOrder,
+  getTotalRevenue,
   updateOrderStatus,
+  getTotalOrdersCount,
 };

@@ -1,5 +1,5 @@
 // src/layouts/MainLayout.tsx
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Outlet, useLocation, useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -8,9 +8,13 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
 import Toolbar from '@mui/material/Toolbar';
+import { Bouncy } from 'ldrs/react';
 
 
 import FloatingBlobs from '../components/floatingblobs';
+import PageLoader from '../components/PageLoader';
+import FloatingBlobs2 from '../components/FloatingBlobs2';
+
 
 
 
@@ -19,18 +23,34 @@ const MainLayout: React.FC = () => {
   const location = useLocation();
   const theme = useTheme(); // *** Ensure theme is obtained ***
   const navigate = useNavigate();
+
+  const [isForceLoading, setIsForceLoading] = useState(false);
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null); 
+
+
   const [isLoading, setIsLoading] = useState(false);
   useEffect(() => {
     // When location changes, set loading to true
-    setIsLoading(true);
+     setIsForceLoading(true);
+
+     timeoutRef.current = setTimeout(() => {
+      setIsForceLoading(false);
+      timeoutRef.current = null; // Clear the ref after timeout completes
+    }, 2000);
     
     // After a delay, set loading to false (transition complete)
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1200); // Adjust timing as needed
-    
-    return () => clearTimeout(timer);
-  }, [location.pathname]);
+    return () => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
+    };
+  }, [location.pathname]); // Re-run this effect ONLY when the pathname changes
+  // --- End Forced Loader Effect ---
+
+
+  // --- Determine if the loader should be shown ---
+  // Show if React Router is loading OR if we are force loading
+  const showLoader = isForceLoading;
 
   const handleNavigation = (path: string) => {
     setIsLoading(true);
@@ -54,6 +74,8 @@ const MainLayout: React.FC = () => {
     return 'default';
   };
 
+  
+
   return (
     <Box
       sx={{
@@ -61,7 +83,7 @@ const MainLayout: React.FC = () => {
         display: 'flex',
         flexDirection: 'column',
         overflowX: 'hidden',
-        background: "linear-gradient(135deg, #e2cc9c 0%, #e84a2e 100%)",
+        background: "linear-gradient(135deg, #3a2f6b 0%, #0d4d54 100%)",
         margin: 0,
         padding: 0,
         position: 'relative',
@@ -72,21 +94,31 @@ const MainLayout: React.FC = () => {
       {/*<Box sx={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 0 }}>
         <BackgroundShapes variant={getShapeVariant()} />
       </Box>*/}
-
+      {/*}
       <Box sx={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 0 }}>  
         <FloatingBlobs/>
-      </Box>  
+      </Box>  */}
 
+     {/*}
+      <Box sx={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 0 }}>  
+        <FloatingBlobs2/>
+      </Box>  */}
+      
+      
+      
      
-
-      
-      
-      
-
       <CssBaseline />
+      
       
       {/* Navbar is rendered here but positioned fixed via its own styles */}
       <Navbar />
+      <PageLoader isLoading={isLoading} /> {/* Loader component */}
+      
+
+      {/* Toolbar to push content below the navbar */}
+      {/* This is a placeholder. You can customize it or remove it if not needed */}
+      
+      
       <Toolbar />
       
 
@@ -106,6 +138,11 @@ const MainLayout: React.FC = () => {
          
         }}
       >
+
+
+
+
+        
         <Outlet /> {/* Page content renders here */}
       </Box>
 

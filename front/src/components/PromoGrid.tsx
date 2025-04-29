@@ -67,7 +67,7 @@ const PromoGrid: React.FC = () => {
       >
         <Typography
           variant="h4"
-          color="text.primary"
+          color="white"
           component="h2"
           gutterBottom
           align="center"
@@ -90,7 +90,7 @@ const PromoGrid: React.FC = () => {
           >
             <Paper elevation={3} sx={centeredPaperStyles} > {/* Apply common styles */}
               <CampaignIcon sx={{ fontSize: 40, color: 'primary.main', mb: 2 }} />
-              <Typography variant="h6" component="h3" gutterBottom sx={{ color: 'text.primary', fontWeight: 'bold' }}>
+              <Typography variant="h6" component="h3" gutterBottom sx={{ color: 'white', fontWeight: 'bold' }}>
                 New Collection Arrived!
               </Typography>
               {/* Use Box to control text width if needed, otherwise Typography directly */}
@@ -115,7 +115,7 @@ const PromoGrid: React.FC = () => {
           >
              <Paper elevation={3} sx={centeredPaperStyles}> {/* Apply common styles */}
               <LocalOfferIcon sx={{ fontSize: 40, color: 'secondary.main', mb: 2 }} /> {/* Adjusted icon size/margin */}
-              <Typography variant="h6" component="h3" gutterBottom sx={{ color: 'text.primary', fontWeight: 'bold' }}> {/* Added gutterBottom */}
+              <Typography variant="h6" component="h3" gutterBottom sx={{ color: 'white', fontWeight: 'bold' }}> {/* Added gutterBottom */}
                 Summer Sale On!
               </Typography>
               <Typography variant="body2" sx={{ color: 'text.secondary', flexGrow: 1, mb: 2, maxWidth: '90%' }}> {/* Allow text to grow */}
@@ -143,7 +143,7 @@ const PromoGrid: React.FC = () => {
           >
             <Paper elevation={3} sx={centeredPaperStyles}> {/* Apply common styles */}
               <NewReleasesIcon sx={{ fontSize: 40, color: 'info.main', mb: 2 }} /> {/* Adjusted icon size/margin */}
-              <Typography variant="h6" component="h3" gutterBottom sx={{ color: 'text.primary', fontWeight: 'bold' }}> {/* Added gutterBottom */}
+              <Typography variant="h6" component="h3" gutterBottom sx={{ color: 'white', fontWeight: 'bold' }}> {/* Added gutterBottom */}
                 Free Shipping Update alwyas
               </Typography>
               <Typography variant="body2" sx={{ color: 'text.secondary', flexGrow: 1, mb: 2, maxWidth: '90%' }}> {/* Allow text to grow */}
@@ -168,7 +168,7 @@ const PromoGrid: React.FC = () => {
           >
             <Paper elevation={3} sx={centeredPaperStyles}> {/* Apply common styles */}
               <InfoIcon sx={{ fontSize: 40, color: 'warning.main', mb: 2 }} />
-              <Typography variant="h6" component="h3" gutterBottom sx={{ color: 'text.primary', fontWeight: 'bold' }}>
+              <Typography variant="h6" component="h3" gutterBottom sx={{ color: 'white', fontWeight: 'bold' }}>
                 Care Instructions
               </Typography>
               <Typography variant="body2" sx={{ color: 'text.secondary', flexGrow: 1, mb: 2, maxWidth: '90%' }}> {/* Allow text to grow */}

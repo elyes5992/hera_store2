@@ -17,6 +17,8 @@ import Dashboard from './pages/Admin/AdminDashboard';
 import CartPage from './pages/CartPage';
 import AdminProductsPage from './pages/Admin/AdminProducts';
 import ProductsPage2 from './pages/ProductsPage2';
+import AdminOrders from './pages/Admin/AdminOrders';
+import ProductsPage from './pages/ProductsPage2';
 
 
 
@@ -75,7 +77,7 @@ const App: React.FC = () => {
             <Route path="products" element={<ProductsPage2 />} />
             <Route path="About-us" element={<AboutUsPage />} />
             <Route path="cart" element={<CartPage/>} />
-            
+            <Route path="/products/:productId?" element={<ProductsPage />} />
             
             
             
@@ -88,10 +90,12 @@ const App: React.FC = () => {
           <Route path="/admin" element={<AdminLayout />}>
             {/* Admin login page (handled by AdminLayout) */}
             <Route path="login" element={<AdminLogin />} />
-            
+            <Route index element={<Dashboard />} />
             {/* Admin dashboard pages */}
             <Route path="dashboard" element={<Dashboard />} />
             <Route path="AdminProducts" element={<AdminProductsPage/>} />
+            <Route path="orders" element={<AdminOrders />} />
+            
             
             
             

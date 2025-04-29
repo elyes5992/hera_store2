@@ -1,5 +1,5 @@
 // src/pages/Admin/AdminProductsPage.tsx
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Box,
@@ -27,6 +27,11 @@ import {
   TablePagination,
   useTheme,
   Divider,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
 } from "@mui/material";
 import {
   Add as AddIcon,
@@ -47,6 +52,10 @@ interface Product {
   description: string;
   discountPercentage?: number;
   tags?: string[];
+}
+interface Category {
+  _id: string;
+  name: string;
 }
 
 interface ProductFormData {
@@ -69,6 +78,10 @@ const AdminProductsPage: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+
+  const [availableCategories, setAvailableCategories] = useState<Category[]>([]);
+  const [categoryLoading, setCategoryLoading] = useState(true); // Separate loading for categories dropdown
+  const [categoryError, setCategoryError] = useState<string | null>(null); 
 
   // State for product form
   const [openForm, setOpenForm] = useState(false);
@@ -140,6 +153,32 @@ const AdminProductsPage: React.FC = () => {
     }
   };
 
+  const fetchAvailableCategories = useCallback(async () => {
+    setCategoryLoading(true);
+    setCategoryError(null);
+    try {
+        // Assuming public GET endpoint, no token needed here? Adjust if required.
+        const response = await fetch('http://localhost:5000/api/categories');
+        if (!response.ok) {
+            throw new Error('Failed to fetch categories for dropdown');
+        }
+        const data = await response.json();
+        // Assuming API returns array directly or { categories: [...] }
+        setAvailableCategories(data.categories || data || []);
+    } catch (err: any) {
+        console.error("Error fetching categories:", err);
+        setCategoryError(err.message || 'Could not load categories.');
+        // Optionally show snackbar error here too
+        // setSnackbar({ open: true, message: err.message || 'Could not load categories.', severity: 'error' });
+    } finally {
+        setCategoryLoading(false);
+    } }, []);
+
+
+    useEffect(() => {
+      fetchAvailableCategories();
+  }, [fetchAvailableCategories]);
+
   // Function to handle form input changes
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -171,6 +210,14 @@ const AdminProductsPage: React.FC = () => {
       });
     }
   };
+  // Specific handler for the Category Select dropdown
+  const handleCategoryChange = (event: SelectChangeEvent<string>) => {
+    const { name, value } = event.target;
+    setFormData(prevFormData => ({
+        ...prevFormData,
+        [name]: value // Value will be the category name string
+    }));
+};
 
   // Function to handle image upload
   const handleImageUpload = (files: FileList | null) => {
@@ -448,6 +495,8 @@ const AdminProductsPage: React.FC = () => {
     page * rowsPerPage + rowsPerPage
   );
 
+
+
   return (
     <Box
       component={motion.div}
@@ -644,16 +693,31 @@ const AdminProductsPage: React.FC = () => {
                   margin="normal"
                 />
               </Grid>
-              <Grid size={{ xs: 12, sm: 6 }}>
-                <TextField
-                  fullWidth
-                  required
-                  label="Category"
-                  name="category"
-                  value={formData.category}
-                  onChange={handleInputChange}
-                  margin="normal"
-                />
+              <Grid size={{xs:12 ,sm:6}} >
+                  <FormControl fullWidth required margin="normal" error={!!categoryError || (formError && formError.includes('Category'))} disabled={categoryLoading}>
+                      <InputLabel id="category-select-label">Category</InputLabel>
+                      <Select
+                          labelId="category-select-label"
+                          id="category-select"
+                          name="category" // Must match state key
+                          value={formData.category} // Bind to state
+                          label="Category" // Required for outlined label
+                          onChange={handleCategoryChange} // Use specific handler
+                      >
+                          {/* Default empty option */}
+                          <MenuItem value="" disabled>
+                              <em>{categoryLoading ? "Loading..." : "Select a Category"}</em>
+                          </MenuItem>
+                          {/* Map available categories */}
+                          {availableCategories.map((cat) => (
+                              <MenuItem key={cat._id} value={cat.name}>
+                                  {cat.name}
+                              </MenuItem>
+                          ))}
+                      </Select>
+                      {/* Show category fetch error */}
+                      {categoryError && <Typography variant="caption" color="error" sx={{mt: 1}}>{categoryError}</Typography>}
+                  </FormControl>
               </Grid>
               <Grid size={{ xs: 12, sm: 4 }}>
                 <TextField
@@ -661,11 +725,14 @@ const AdminProductsPage: React.FC = () => {
                   required
                   label="Price"
                   name="price"
-                  type="number"
-                  inputProps={{ min: 0, step: 0.01 }}
+                  type="text"
+                  
+                
+                 
                   value={formData.price}
                   onChange={handleInputChange}
                   margin="normal"
+                  placeholder="e.g., 19.99" 
                 />
               </Grid>
               <Grid size={{ xs: 12, sm: 4 }}>
@@ -686,8 +753,8 @@ const AdminProductsPage: React.FC = () => {
                   fullWidth
                   label="Discount Percentage"
                   name="discountPercentage"
-                  type="number"
-                  inputProps={{ min: 0, max: 100 }}
+                  type="text"
+                  inputMode="numeric"
                   value={formData.discountPercentage}
                   onChange={handleInputChange}
                   margin="normal"
