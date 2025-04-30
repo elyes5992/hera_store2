@@ -1,6 +1,7 @@
 // src/store/apis/authApi.ts
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
+
 interface LoginCredentials {
   email: string;
   password: string;
@@ -23,7 +24,7 @@ interface UserResponse {
 export const authApi = createApi({
   reducerPath: 'authApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:5000/api/users',
+    baseUrl: `${import.meta.env.VITE_API_URL}/api/users`,
     credentials: 'include',
   }),
   tagTypes: ['User'],

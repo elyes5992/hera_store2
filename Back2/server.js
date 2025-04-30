@@ -30,7 +30,7 @@ app.use(express.json());
 app.use(cors({
   origin: process.env.NODE_ENV === 'production' 
     ? process.env.FRONTEND_URL 
-    : 'http://localhost:5173', // Vite's default port
+    :[ 'http://localhost:5173','http://172.16.50.122:5173'], // Vite's default port
   credentials: true
 }));
 

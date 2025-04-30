@@ -8,12 +8,13 @@ import Navbar from '../components/Navbar';
 import Footer from '../components/Footer';
 
 import Toolbar from '@mui/material/Toolbar';
-import { Bouncy } from 'ldrs/react';
 
 
-import FloatingBlobs from '../components/floatingblobs';
+
+
 import PageLoader from '../components/PageLoader';
 import FloatingBlobs2 from '../components/FloatingBlobs2';
+
 
 
 
@@ -50,7 +51,7 @@ const MainLayout: React.FC = () => {
 
   // --- Determine if the loader should be shown ---
   // Show if React Router is loading OR if we are force loading
-  const showLoader = isForceLoading;
+  
 
   const handleNavigation = (path: string) => {
     setIsLoading(true);
@@ -99,10 +100,10 @@ const MainLayout: React.FC = () => {
         <FloatingBlobs/>
       </Box>  */}
 
-     {/*}
+     
       <Box sx={{ position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, zIndex: 0 }}>  
         <FloatingBlobs2/>
-      </Box>  */}
+      </Box>  
       
       
       

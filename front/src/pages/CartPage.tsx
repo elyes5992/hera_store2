@@ -180,7 +180,7 @@ const CartPage: React.FC = () => {
 
       const token = user?.token || localStorage.getItem("userToken");
 
-      const response = await fetch("http://localhost:5000/api/orders", {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/orders`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -213,7 +213,7 @@ const CartPage: React.FC = () => {
   };
 
   const formatImageUrl = (url: string | undefined | null): string => {
-    const API_BASE_URL = "http://localhost:5000";
+    const API_BASE_URL = `${import.meta.env.VITE_API_URL}`;
     if (!url) return "";
     if (url.startsWith("http://") || url.startsWith("https://")) return url;
     const sanitizedPath = url.startsWith("/") ? url.substring(1) : url;

@@ -69,7 +69,7 @@ interface CartContextType {
 
 const CartContext = createContext<CartContextType | undefined>(undefined);
 
-const API_BASE_URL = 'http://localhost:5000/api/cart'; // Your backend cart endpoint
+const API_BASE_URL = `${import.meta.env.VITE_API_URL}/api/cart`; // Your backend cart endpoint
 
 // --- API Helper ---
 const getAuthHeaders = (token: string | null) => ({

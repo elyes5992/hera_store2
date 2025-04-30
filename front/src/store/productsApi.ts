@@ -1,12 +1,11 @@
 // src/store/apis/productsApi.ts
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-
-
+ // Import from our config
 
 export const productsApi = createApi({
   reducerPath: 'productsApi',
   baseQuery: fetchBaseQuery({ 
-    baseUrl: "http://localhost:5000/api",
+    baseUrl: `${import.meta.env.VITE_API_URL}/api`,
     credentials: 'include',
     prepareHeaders: (headers) => {
       // Add authorization header if we have a token

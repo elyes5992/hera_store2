@@ -162,12 +162,15 @@ const Navbar: React.FC = () => {
         </IconButton>
       </Box>
       <Divider />
-      <List onClick={handleDrawerToggle}>
+      
+      <List >
         {navItems.map((item) => (
           <ListItem key={item.label} disablePadding>
             <ListItemButton
               sx={{ textAlign: "left", pl: 2 }}
-              onClick={() => handleDrawerNavigation(item.path)}
+              onClick={() => handleDrawerNavigation(item.path)
+                
+              }
             >
               <ListItemText primary={item.label} />
             </ListItemButton>
@@ -182,7 +185,8 @@ const Navbar: React.FC = () => {
               <ListItemButton
                 sx={{ textAlign: "left", pl: 2 }}
                 onClick={() => {
-                  navigate("/profile"); // Navigate to profile page
+                  navigate("/profile");
+                  setMobileOpen(false); // Navigate to profile page
                 }}
               >
                 <PersonIcon sx={{ mr: 1.5 }} />
@@ -212,6 +216,7 @@ const Navbar: React.FC = () => {
               onClick={() => {
                 // Open the modal, don't navigate away
                 handleOpenAuthModal("signIn");
+                setMobileOpen(false);
                 // Let the modal handle closing the drawer if needed, or keep drawer open
                 // handleDrawerToggle is called by parent List onClick, maybe prevent propagation if needed
               }}
@@ -221,17 +226,7 @@ const Navbar: React.FC = () => {
             </ListItemButton>
           </ListItem>
         )}
-        <ListItem disablePadding>
-          <ListItemButton
-            sx={{ textAlign: "left", pl: 2 }}
-            onClick={() => {
-              handleOpenAuthModal("signIn");
-              handleDrawerToggle();
-            }}
-          >
-            <ListItemText primary="Sign In / Sign Up" />
-          </ListItemButton>
-        </ListItem>
+        
         <ListItem disablePadding>
           <ListItemButton
             sx={{ textAlign: "left", pl: 2 }}
@@ -268,7 +263,7 @@ const Navbar: React.FC = () => {
           borderBottomRightRadius: isScrolled ? "20px" : "0px",
           color: "white",
           boxShadow: isScrolled ? floatingShadow : "none",
-          zIndex: theme.zIndex.drawer + 1,
+          //zIndex: theme.zIndex.drawer + 1,
           transition: `background-color ${transitionDuration} ${transitionTiming}, backdrop-filter ${transitionDuration} ${transitionTiming}, border-radius ${transitionDuration} ${transitionTiming}, box-shadow ${transitionDuration} ${transitionTiming}`,
         }}
       >
@@ -337,7 +332,7 @@ const Navbar: React.FC = () => {
                   height: { xs: 40, sm: 44, md: 50 },
                   width: { xs: 40, sm: 44, md: 50 },
                   overflow: 'hidden',
-                  boxShadow: "0 10px 10px rgba(0,0,0,0.8)",
+                  boxShadow: "0 10px 10px rgba(0,0,0,0.2)",
                   transform: floatingTransform,
                   transition: `transform 0.3s ${transitionTiming}, box-shadow 0.3s ${transitionTiming}`,
                   '&:hover': {

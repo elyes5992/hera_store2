@@ -81,7 +81,7 @@ interface OrderFilters {
 export const ordersApi = createApi({
   reducerPath: 'ordersApi',
   baseQuery: fetchBaseQuery({
-    baseUrl: 'http://localhost:5000/api',
+    baseUrl: `${import.meta.env.VITE_API_URL}/api`,
     prepareHeaders: (headers) => {
       // Add authorization header with admin token
       const token = localStorage.getItem('adminToken');

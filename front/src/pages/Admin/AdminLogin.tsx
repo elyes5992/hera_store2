@@ -48,7 +48,7 @@ const AdminLogin: React.FC = () => {
     
     try {
       // Call the backend API
-      const response = await fetch('http://localhost:5000/api/users/login', {
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/users/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

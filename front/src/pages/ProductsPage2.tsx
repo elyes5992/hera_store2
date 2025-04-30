@@ -32,6 +32,8 @@ import ProductModal from "../components/ProductModel"; // Corrected typo: Produc
 import { useTheme } from "@mui/material/styles"; // Import useTheme
 import Grid from "@mui/material/Grid";
 
+
+
 // Define available categories
 const categories = [
   "Desk Organizers",
@@ -91,7 +93,7 @@ const ProductsPage: React.FC = () => {
   // --- Functions (Keep existing implementations) ---
   const formatImageUrl = useCallback(
     (url: string | undefined | null): string => {
-      const API_BASE_URL = "http://localhost:5000"; //
+      const API_BASE_URL = `${import.meta.env.VITE_API_URL}`; //
       if (!url) return "";
       if (url.startsWith("http://") || url.startsWith("https://")) return url;
       const sanitizedPath = url.startsWith("/") ? url.substring(1) : url;
@@ -103,7 +105,7 @@ const ProductsPage: React.FC = () => {
     setLoading(true);
     setError(null);
     try {
-      const response = await fetch("http://localhost:5000/api/products");
+      const response = await fetch(`${import.meta.env.VITE_API_URL}/api/products`);
       if (!response.ok) {
         throw new Error(
           `Error fetching products: ${response.status} ${response.statusText}`
@@ -705,7 +707,7 @@ const ProductsPage: React.FC = () => {
             ) : filteredProducts.length > 0 ? (
               <Grid container spacing={3}>
                 {filteredProducts.map((product) => (
-                  <Grid size={{ xs: 6, sm: 6, md: 4 }} key={product.id}>
+                  <Grid size={{ xs: 12, sm: 6, md: 4 }} key={product.id}>
                     {" "}
                     {/* Grid v2 sizing */}
                     <ProductCard item={product} onCardClick={handleCardClick} />
